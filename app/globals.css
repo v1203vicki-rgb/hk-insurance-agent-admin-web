@@ -1,0 +1,26 @@
+:root {
+  color-scheme: light;
+  --admin-bg: #eef3fb;
+  --admin-panel: #ffffff;
+  --admin-line: #dbe5f2;
+  --admin-text: #172036;
+  --admin-subtle: #71829f;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  font-family: "PingFang SC", "Microsoft YaHei", Inter, sans-serif;
+}
+
+body {
+  overflow-y: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
