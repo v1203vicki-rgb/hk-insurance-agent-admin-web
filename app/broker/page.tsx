@@ -19,12 +19,11 @@ export default async function BrokerPage() {
 
   try {
     const [analytics, documentResponse] = await Promise.all([getBrokerAnalytics(), getBrokerDocuments()]);
-
     stats = [
-      { label: "本月问答", value: String(analytics.askCount).replace(/\B(?=(\d{3})+(?!\d))/g, ","), note: "较上月 +12%" },
-      { label: "上传文件", value: "126", note: "待审核 14" },
+      { label: "本月问答量", value: String(analytics.askCount), note: "仅统计本公司" },
+      { label: "产品对比次数", value: String(analytics.compareCount), note: "本月累计" },
+      { label: "待审核文件", value: "14", note: "需平台管理员审核" },
       { label: "无答案问题", value: String(analytics.unansweredCount), note: "需补充 FAQ" },
-      { label: "产品对比", value: String(analytics.compareCount), note: "高频：医疗险" },
     ];
 
     documents = documentResponse.items.map((item) => [
@@ -34,28 +33,28 @@ export default async function BrokerPage() {
       <StatusBadge key={`${item.id}-status`} label={item.status} />,
     ]);
   } catch {
-    // Keep mock view.
+    // 演示模式使用本地数据。
   }
 
   return (
     <PageShell
       title="经纪公司工作台"
-      description="上传资料需平台审核后进入公共知识库；本后台仅查看本公司数据"
+      description="当前仅展示本公司 mock 数据。上传资料需平台审核后才会进入公共知识库。"
       actions={
         <Link href="/broker/upload">
           <ToolbarButton tone="dark">上传资料</ToolbarButton>
         </Link>
       }
     >
-      <section style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(4, minmax(0, 1fr))" }}>
+      <section style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(4, minmax(0, 1fr))" }}>
         {stats.map((stat) => (
           <StatCard key={stat.label} label={stat.label} value={stat.value} note={stat.note} />
         ))}
       </section>
 
-      <section style={{ display: "grid", gap: 20, gridTemplateColumns: "1.45fr 0.72fr" }}>
-        <InfoCard title="文件状态" description="经纪公司只能查看自身上传文件状态">
-          <DataTable headers={["文件", "类型", "版本", "状态"]} rows={documents} gridTemplateColumns="2fr 1fr 0.8fr 0.8fr" />
+      <section style={{ display: "grid", gap: 18, gridTemplateColumns: "1.45fr 0.72fr" }}>
+        <InfoCard title="文件状态" description="经纪公司只能查看自身上传文件状态。">
+          <DataTable headers={["文件", "类型 / 来源", "版本", "审核状态"]} rows={documents} gridTemplateColumns="2fr 1fr 0.8fr 0.8fr" />
         </InfoCard>
 
         <InfoCard title="上传限制提示">
@@ -66,17 +65,16 @@ export default async function BrokerPage() {
             </div>
             <div style={{ padding: 16, borderRadius: 18, background: "#f4f8fe" }}>
               <strong>禁止上传</strong>
-              <div style={{ marginTop: 6, color: "#71829f" }}>身份证、银行资料、医疗报告、诊断文件</div>
+              <div style={{ marginTop: 6, color: "#71829f" }}>身份证、通行证、银行资料、医疗报告、体检报告</div>
             </div>
-            <div style={{ padding: 16, borderRadius: 18, background: "#f4f8fe" }}>
-              <strong>保存期限</strong>
-              <div style={{ marginTop: 6, color: "#71829f" }}>客户上传文件默认保存 1 个月</div>
+            <div style={{ padding: 16, borderRadius: 18, background: "#fff8e6", color: "#b45c12" }}>
+              上传并提交审核后，该资料可能被纳入平台公共知识库，供平台内问答服务使用。
             </div>
           </div>
         </InfoCard>
       </section>
 
-      <InfoCard title="本公司咨询记录">
+      <InfoCard title="本公司咨询记录" description="只能查看本公司会话，导出时仅导出匿名会话。">
         <DataTable headers={["问题", "分类", "来源命中", "风险", "时间"]} rows={brokerChatSessions} gridTemplateColumns="2.6fr 0.8fr 0.8fr 1.1fr 0.7fr" />
       </InfoCard>
     </PageShell>

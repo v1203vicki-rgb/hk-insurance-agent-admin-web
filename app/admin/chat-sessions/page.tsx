@@ -29,13 +29,13 @@ export default async function AdminChatSessionsPage() {
       item.createdAt ?? "-",
     ]);
   } catch {
-    // Use mock rows.
+    // 演示模式沿用本地数据。
   }
 
   return (
-    <PageShell title="会话管理" description="查看客户问题、Agent 回答、命中文件与风险标签" actions={<ToolbarButton tone="dark">导出匿名会话</ToolbarButton>}>
-      <InfoCard title="会话列表" description="MVP 不做客户留资，后台不展示真实身份字段。">
-        <DataTable headers={["问题", "分类 / 风险", "来源命中", "语言", "时间"]} rows={rows} gridTemplateColumns="2.5fr 1fr 0.8fr 0.8fr 0.7fr" />
+    <PageShell title="会话管理" description="查看匿名客户问题、Assistant 回答、风险标签、上传文件和引用来源。" actions={<ToolbarButton tone="dark">导出匿名会话</ToolbarButton>}>
+      <InfoCard title="会话列表" description="MVP 不展示客户真实身份字段。">
+        <DataTable headers={["问题", "分类 / 风险", "来源命中", "语言", "时间"]} rows={rows} gridTemplateColumns="2.5fr 1fr 0.8fr 0.8fr 0.8fr" />
       </InfoCard>
     </PageShell>
   );

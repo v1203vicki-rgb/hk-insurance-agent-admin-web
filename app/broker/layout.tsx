@@ -1,11 +1,6 @@
 import type { ReactNode } from "react";
-import { Sidebar } from "../../components/sidebar";
+import { ConsoleLayout } from "../../components/console-layout";
 
 export default function BrokerLayout({ children }: { children: ReactNode }) {
-  return (
-    <div style={{ display: "grid", gridTemplateColumns: "284px minmax(0, 1fr)", minHeight: "100vh" }}>
-      <Sidebar scope="broker" />
-      <div>{children}</div>
-    </div>
-  );
+  return <ConsoleLayout scope="broker">{children}</ConsoleLayout>;
 }

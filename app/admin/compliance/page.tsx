@@ -1,18 +1,20 @@
+import Link from "next/link";
 import { DataTable, type TableRow } from "../../../components/data-table";
 import { InfoCard } from "../../../components/info-card";
 import { PageShell } from "../../../components/page-shell";
 import { StatCard } from "../../../components/stat-card";
 import { StatusBadge } from "../../../components/status-badge";
-import { ToolbarButton } from "../../../components/toolbar-button";
 import { getComplianceOverview } from "../../../lib/api";
 import { complianceRows, complianceStats } from "../../../lib/mock-data";
 
 export default async function CompliancePage() {
   let stats = complianceStats;
-  let rows: TableRow[] = complianceRows.map(([issue, riskType, status, time, note]) => [
-    issue,
+  let rows: TableRow[] = complianceRows.map(([issue, riskType, status, time, note], index) => [
+    <Link key={issue} href={`/admin/compliance/risk_${index + 1}`} style={{ color: "#1b2740", fontWeight: 700 }}>
+      {issue}
+    </Link>,
     riskType,
-    <StatusBadge key={`${issue}-status`} label={status} />,
+    <StatusBadge key={`${issue}-status`} label={status} tone={status === "通过" ? "success" : status === "待复核" ? "warning" : "info"} />,
     time,
     note,
   ]);
@@ -20,27 +22,29 @@ export default async function CompliancePage() {
   try {
     const overview = await getComplianceOverview();
     stats = overview.stats.map((item) => ({ label: item.label, value: String(item.value) }));
-    rows = overview.records.map((item) => [
-      item.type,
+    rows = overview.records.map((item, index) => [
+      <Link key={item.type} href={`/admin/compliance/risk_${index + 1}`} style={{ color: "#1b2740", fontWeight: 700 }}>
+        {item.type}
+      </Link>,
       item.note,
       <StatusBadge key={`${item.type}-status`} label={item.status} />,
       item.latestAt,
-      item.count,
+      String(item.count),
     ]);
   } catch {
-    // Use mock rows.
+    // 演示模式沿用本地数据。
   }
 
   return (
-    <PageShell title="合规审核" description="敏感回答、高风险问题、无来源拦截和过期优惠引用统一追踪" actions={<ToolbarButton tone="dark">查看明细</ToolbarButton>}>
-      <section style={{ display: "grid", gap: 20, gridTemplateColumns: "repeat(4, minmax(0, 1fr))" }}>
+    <PageShell title="合规审核" description="统一追踪敏感回答、高风险问题、无来源拦截、内部培训资料引用和过期优惠引用。">
+      <section style={{ display: "grid", gap: 18, gridTemplateColumns: "repeat(4, minmax(0, 1fr))" }}>
         {stats.map((stat) => (
           <StatCard key={stat.label} label={stat.label} value={stat.value} />
         ))}
       </section>
 
-      <InfoCard title="合规审核列表" description="系统会记录收益类回答、过期优惠、内部培训资料引用和无来源拦截。">
-        <DataTable headers={["问题类型", "规则备注", "状态", "最近时间", "数量"]} rows={rows} gridTemplateColumns="1.4fr 1.8fr 0.8fr 0.9fr 0.6fr" />
+      <InfoCard title="合规记录列表" description="可进入详情页查看命中规则、引用来源和审核结论。">
+        <DataTable headers={["记录", "风险类型 / 命中说明", "当前状态", "最近时间", "建议动作"]} rows={rows} gridTemplateColumns="1.6fr 1.8fr 0.8fr 0.9fr 1fr" />
       </InfoCard>
     </PageShell>
   );

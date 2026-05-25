@@ -21,7 +21,7 @@ export function ChatSessionDetailClient({ initialDetail }: { initialDetail: Chat
   return (
     <PageShell
       title="会话详情"
-      description="查看客户问题、Agent 回答、引用来源和风险处理记录。"
+      description="查看匿名客户 ID、所属租户、完整问答、引用来源、风险标签与上传文件记录。"
       actions={
         <Link href="/admin/chat-sessions" style={{ color: "#1b2740", fontWeight: 700 }}>
           返回会话列表
@@ -52,7 +52,7 @@ export function ChatSessionDetailClient({ initialDetail }: { initialDetail: Chat
           </div>
         </InfoCard>
 
-        <InfoCard title="处理动作面板" description="新增复核、跟进或风险备注后，右侧摘要与记录会同步更新。">
+        <InfoCard title="处理动作面板" description="新增复核、补充说明或风险处理记录后，摘要区会同步刷新。">
           <SessionRiskPanel
             sessionId={detail.id}
             riskType={detail.riskType}
@@ -65,24 +65,24 @@ export function ChatSessionDetailClient({ initialDetail }: { initialDetail: Chat
         </InfoCard>
       </section>
 
-      <section style={{ display: "grid", gap: 20, gridTemplateColumns: "1fr 1fr" }}>
+      <section style={{ display: "grid", gap: 20 }}>
         {detail.messages.map((message, index) => (
-          <InfoCard key={`${message.role}-${index}`} title={message.role === "USER" ? "用户问题" : "Agent 回答"} description={message.content} />
+          <InfoCard key={`${message.role}-${index}`} title={message.role === "USER" ? "用户问题" : "Assistant 回答"} description={message.content}>
+            {message.role === "ASSISTANT" ? (
+              <div style={{ display: "grid", gap: 10 }}>
+                {detail.citations.map((citation) => (
+                  <div key={`${citation.fileName}-${citation.pageNumber}`} style={blockStyle}>
+                    <strong style={{ color: "#172036" }}>{citation.fileName}</strong>
+                    <div style={{ marginTop: 6, color: "#71829f" }}>来源等级：{citation.sourceLevel}</div>
+                    <div style={{ marginTop: 6, color: "#71829f" }}>页码：P.{citation.pageNumber}</div>
+                    <div style={{ marginTop: 6, color: "#71829f" }}>版本号：{citation.version}</div>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+          </InfoCard>
         ))}
       </section>
-
-      <InfoCard title="引用来源" description="所有关键结论都应可追溯到具体文件与页码。">
-        <div style={{ display: "grid", gap: 10 }}>
-          {detail.citations.map((citation) => (
-            <div key={`${citation.fileName}-${citation.pageNumber}`} style={blockStyle}>
-              <strong style={{ color: "#172036" }}>{citation.fileName}</strong>
-              <div style={{ marginTop: 6, color: "#71829f" }}>来源等级：{citation.sourceLevel}</div>
-              <div style={{ marginTop: 6, color: "#71829f" }}>页码：P.{citation.pageNumber}</div>
-              <div style={{ marginTop: 6, color: "#71829f" }}>版本号：{citation.version}</div>
-            </div>
-          ))}
-        </div>
-      </InfoCard>
     </PageShell>
   );
 }

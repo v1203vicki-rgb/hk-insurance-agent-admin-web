@@ -36,7 +36,7 @@ export function ProductVersionSwitcher({
     <div style={{ display: "grid", gap: 14 }}>
       <div style={{ display: "grid", gap: 6 }}>
         <strong style={{ fontSize: 15, color: "#172036" }}>版本选择</strong>
-        <span style={{ color: "#71829f", lineHeight: 1.7 }}>平台统一控制 Agent 当前使用版本，确保回答来源一致。</span>
+        <span style={{ color: "#71829f", lineHeight: 1.7 }}>平台统一控制 Agent 当前使用版本，切换后会同步影响后续问答与产品对比。</span>
       </div>
 
       <div style={{ display: "grid", gap: 10 }}>
@@ -54,13 +54,13 @@ export function ProductVersionSwitcher({
               cursor: "pointer",
             }}
           >
-            <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
               <input type="radio" name={`product-version-${productId}`} checked={item.version === selectedVersion} onChange={() => setSelectedVersion(item.version)} />
               <strong style={{ color: "#172036" }}>{item.version}</strong>
               <span style={{ color: "#71829f", fontSize: 12 }}>状态：{item.status}</span>
             </div>
-            <span style={{ color: "#71829f" }}>
-              发布：{item.publishDate} / 生效：{item.effectiveDate} / 关联文件：{item.documentCount}
+            <span style={{ color: "#71829f", fontSize: 13 }}>
+              发布 {item.publishDate} / 生效 {item.effectiveDate} / 关联文件 {item.documentCount}
             </span>
           </label>
         ))}
@@ -84,7 +84,7 @@ export function ProductVersionSwitcher({
                 setResultText(`接口返回 activeVersionId：${response.activeVersionId ?? nextVersion}`);
                 onUpdated?.({ activeVersion: selectedVersion });
               } catch {
-                setResultText("请求失败，请稍后连接后端服务再次验证。");
+                setResultText("请求失败，请在接入后端后再次验证版本切换。");
               }
             });
           }}
@@ -92,7 +92,7 @@ export function ProductVersionSwitcher({
         >
           {isPending ? "提交中..." : "设为当前启用"}
         </button>
-        <div style={{ color: "#71829f", fontSize: 13 }}>已启用版本：{activeVersion}</div>
+        <div style={{ color: "#71829f", fontSize: 13 }}>当前启用版本：{activeVersion}</div>
       </div>
 
       {resultText ? <div style={{ padding: 12, borderRadius: 14, background: "#f4f8fe", color: "#172036" }}>{resultText}</div> : null}

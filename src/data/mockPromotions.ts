@@ -1,0 +1,47 @@
+import type { PromotionRecord } from "./types";
+
+export const mockPromotions: PromotionRecord[] = [
+  {
+    id: "promo_1",
+    nameZhHans: "A公司重疾投保礼遇",
+    insuranceCompanyId: "company_1",
+    productId: "product_1",
+    startDate: "2026-04-15",
+    endDate: "2026-06-30",
+    applicableCondition: "适用于指定缴费期及指定保费门槛。",
+    exclusionCondition: "不适用于补发申请、逾期保费折扣。",
+    sourceDocumentId: "doc_1",
+    sourcePage: 20,
+    isFrontendVisible: true,
+    status: "ACTIVE",
+  },
+  {
+    id: "promo_2",
+    nameZhHans: "B公司医疗首年折扣",
+    insuranceCompanyId: "company_2",
+    productId: "product_3",
+    startDate: "2026-02-10",
+    endDate: "2026-03-31",
+    applicableCondition: "指定网络及计划级别首年保费折扣。",
+    exclusionCondition: "续保不适用。",
+    sourceDocumentId: "doc_5",
+    sourcePage: 2,
+    isFrontendVisible: true,
+    status: "EXPIRED",
+  },
+  {
+    id: "promo_3",
+    nameZhHans: "匠心飞越保费回赠",
+    insuranceCompanyId: "company_3",
+    productId: "product_4",
+    startDate: "2026-05-01",
+    endDate: "2026-05-31",
+    applicableCondition: "指定渠道提交计划书并完成审核。",
+    exclusionCondition: "内部员工单不适用。",
+    sourceDocumentId: "doc_4",
+    sourcePage: 24,
+    isFrontendVisible: false,
+    status: "PENDING_REVIEW",
+  },
+];
+

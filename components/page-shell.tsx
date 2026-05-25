@@ -12,11 +12,11 @@ export function PageShell({
   children: ReactNode;
 }) {
   return (
-    <section style={{ padding: 38, display: "grid", gap: 26 }}>
-      <header style={{ display: "flex", gap: 20, justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap" }}>
+    <section style={{ padding: "28px 32px 40px", display: "grid", gap: 22 }}>
+      <header style={{ display: "flex", justifyContent: "space-between", gap: 20, alignItems: "flex-start", flexWrap: "wrap" }}>
         <div>
-          <h2 style={{ margin: 0, fontSize: 38, lineHeight: 1.08, letterSpacing: "-0.03em", color: "#172036" }}>{title}</h2>
-          {description ? <p style={{ margin: "8px 0 0", color: "#71829f", maxWidth: 880, lineHeight: 1.6, fontSize: 17 }}>{description}</p> : null}
+          <h1 style={{ margin: 0, fontSize: 24, lineHeight: 1.2, color: "#172036" }}>{title}</h1>
+          {description ? <p style={{ margin: "8px 0 0", color: "#71829f", fontSize: 12, lineHeight: 1.7, maxWidth: 900 }}>{description}</p> : null}
         </div>
         {actions ? <div style={{ display: "flex", gap: 12, flexWrap: "wrap", alignItems: "center" }}>{actions}</div> : null}
       </header>

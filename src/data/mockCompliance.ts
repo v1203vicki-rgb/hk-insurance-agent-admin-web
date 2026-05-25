@@ -1,0 +1,47 @@
+import type { ComplianceRecord } from "./types";
+
+export const mockCompliance: ComplianceRecord[] = [
+  {
+    id: "risk_1",
+    question: "这个储蓄险第几年回本？",
+    answer: "当前仅能确认存在非保证利益，无法在缺少官方利益演示页时推断回本年期。",
+    riskType: "BENEFIT_OR_RETURN",
+    ruleHits: ["收益类需官方来源", "无来源不返回实质结论"],
+    citationIds: ["citation_doc_4_p14"],
+    hasOfficialSource: true,
+    hasExpiredPromotion: false,
+    hasTrainingMaterial: false,
+    status: "PENDING_REVIEW",
+    suggestion: "ADD_DOCUMENT",
+    createdAt: "2026-05-25 11:33",
+  },
+  {
+    id: "risk_2",
+    question: "B公司的折扣现在还能用吗？",
+    answer: "该优惠来源文件已过期，仅可作为历史资料参考。",
+    riskType: "PROMOTION",
+    ruleHits: ["过期优惠必须标记已过期"],
+    citationIds: ["citation_doc_5_p2"],
+    hasOfficialSource: true,
+    hasExpiredPromotion: true,
+    hasTrainingMaterial: false,
+    status: "APPROVED",
+    suggestion: "NONE",
+    createdAt: "2026-05-25 09:36",
+  },
+  {
+    id: "risk_3",
+    question: "这个病种是不是一定赔？",
+    answer: "内部培训资料仅可帮助理解话术，不能替代官方条款。",
+    riskType: "TRAINING_MATERIAL",
+    ruleHits: ["内部培训资料需提示以官方条款为准"],
+    citationIds: ["citation_doc_6_p9"],
+    hasOfficialSource: false,
+    hasExpiredPromotion: false,
+    hasTrainingMaterial: true,
+    status: "FALSE_POSITIVE",
+    suggestion: "ADD_RULE",
+    createdAt: "2026-05-25 08:48",
+  },
+];
+

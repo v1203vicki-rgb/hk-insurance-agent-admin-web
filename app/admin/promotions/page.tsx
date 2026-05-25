@@ -8,17 +8,17 @@ import { getPromotions } from "../../../lib/api";
 import { promotionDetails } from "../../../lib/mock-data";
 
 export default async function PromotionsPage() {
-  let rows: TableRow[] = [
-    [
-      <Link key="promo_1" href="/admin/promotions/promo_1" style={{ color: "#1b2740", fontWeight: 700 }}>
-        {promotionDetails.promo_1.name}
-      </Link>,
-      promotionDetails.promo_1.product,
-      promotionDetails.promo_1.startDate,
-      promotionDetails.promo_1.endDate,
-      <StatusBadge key="promo_1-status" label="启用" />,
-    ],
-  ];
+  let rows: TableRow[] = Object.values(promotionDetails).map((item) => [
+    <Link key={item.id} href={`/admin/promotions/${item.id}`} style={{ color: "#1b2740", fontWeight: 700 }}>
+      {item.name}
+    </Link>,
+    item.insuranceCompany ?? "-",
+    item.product,
+    item.startDate,
+    item.endDate,
+    <StatusBadge key={`${item.id}-status`} label={item.status} tone={item.status === "已过期" ? "danger" : item.status === "生效中" ? "success" : "warning"} />,
+    item.frontendVisible ? "是" : "否",
+  ]);
 
   try {
     const items = await getPromotions();
@@ -26,19 +26,21 @@ export default async function PromotionsPage() {
       <Link key={item.id} href={`/admin/promotions/${item.id}`} style={{ color: "#1b2740", fontWeight: 700 }}>
         {item.name}
       </Link>,
+      item.insuranceCompany ?? "-",
       item.product,
       item.startDate,
       item.endDate,
-      <StatusBadge key={`${item.id}-status`} label={item.status} />,
+      <StatusBadge key={`${item.id}-status`} label={item.status} tone={item.status === "EXPIRED" ? "danger" : item.status === "ACTIVE" ? "success" : "warning"} />,
+      item.frontendVisible ? "是" : "否",
     ]);
   } catch {
-    // Keep mock rows.
+    // 演示模式沿用本地数据。
   }
 
   return (
-    <PageShell title="优惠政策管理" description="管理有效期、适用条件、来源文件与前端展示状态" actions={<ToolbarButton tone="dark">新增优惠</ToolbarButton>}>
-      <InfoCard title="优惠列表" description="过期优惠不自动下架，但前端与回答中必须明确标记“已过期”。">
-        <DataTable headers={["优惠名称", "适用产品", "开始日期", "结束日期", "状态"]} rows={rows} gridTemplateColumns="1.3fr 1.8fr 0.9fr 0.9fr 0.8fr" />
+    <PageShell title="优惠政策管理" description="过期优惠不自动删除，过期状态必须标红展示，状态不明优惠不能作为当前有效优惠。" actions={<ToolbarButton tone="dark">新增</ToolbarButton>}>
+      <InfoCard title="优惠列表" description="可查看适用产品、有效期、来源文件和前端展示状态。">
+        <DataTable headers={["优惠名称", "保险公司", "适用产品", "开始日期", "结束日期", "当前状态", "前端展示"]} rows={rows} gridTemplateColumns="1.4fr 1fr 1.5fr 0.9fr 0.9fr 0.9fr 0.8fr" />
       </InfoCard>
     </PageShell>
   );
