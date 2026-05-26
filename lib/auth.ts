@@ -58,7 +58,7 @@ export function loginDemo(email: string, password: string) {
   const user = mockUsers.find((item) => item.email.toLowerCase() === normalizedEmail);
 
   if (!user || password.trim() !== "password") {
-    return { ok: false as const, message: "邮箱或密码错误，请使用演示账号或默认密码 password。" };
+    return { ok: false as const, message: "邮箱或密码错误，请使用演示账号，默认密码为 password。" };
   }
 
   const tenant = mockTenants.find((item) => item.id === user.tenantId);

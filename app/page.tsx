@@ -17,9 +17,9 @@ const entries = [
     description: "查看本公司文件上传、文件状态、会话记录、数据看板与公司设置。",
   },
   {
-    href: "/mini/home",
+    href: "/mini/chat",
     title: "小程序端预览",
-    description: "用手机壳效果预览首页、问答、知识库、对比、记录、设置和引用来源页面。",
+    description: "查看经纪人移动端知识问答、产品搜索、产品对比、历史记录与来源详情。",
   },
 ];
 
@@ -36,12 +36,10 @@ export default function HomePage() {
             boxShadow: "0 28px 60px rgba(17, 26, 45, 0.18)",
           }}
         >
-          <div style={{ color: "#89a8ff", fontSize: 12, fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase" }}>
-            hk insurance agent
-          </div>
+          <div style={{ color: "#89a8ff", fontSize: 12, fontWeight: 800, letterSpacing: "0.16em", textTransform: "uppercase" }}>hk insurance agent</div>
           <h1 style={{ margin: "14px 0 0", fontSize: 42, lineHeight: 1.08 }}>香港保险知识问答 Agent 演示入口</h1>
           <p style={{ margin: "12px 0 0", color: "#b6c5df", lineHeight: 1.8, maxWidth: 860 }}>
-            这套演示包含平台管理后台、经纪公司后台与小程序端 Web 预览。当前为前端演示数据模式，重点展示权限、审核、知识库、会话与引用来源流程。
+            当前为前端演示数据模式，重点展示平台管理后台、经纪公司后台，以及经纪人移动端知识问答助手的小程序 Web 预览。
           </p>
         </section>
 
@@ -58,6 +56,7 @@ export default function HomePage() {
                 boxShadow: "0 14px 34px rgba(17, 26, 45, 0.06)",
                 display: "grid",
                 gap: 12,
+                textDecoration: "none",
               }}
             >
               <strong style={{ color: "#172036", fontSize: 20 }}>{entry.title}</strong>

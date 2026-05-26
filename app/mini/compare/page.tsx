@@ -1,65 +1,160 @@
-import { CitationCard, MiniCard, MiniShell } from "../../../components/mini-shell";
-import { miniCitations } from "@/src/data";
+"use client";
 
-const rows = [
-  ["保障地区", "全球", "亚洲及指定地区"],
-  ["年度限额", "HKD 30M", "HKD 25M"],
-  ["病房级别", "私家/半私家", "半私家"],
-  ["既往症", "按核保结果", "按核保结果"],
-  ["优惠政策", "有效至 6/30", "已过期"],
-];
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { MiniCard, MiniShell } from "../../../components/mini-shell";
+import { useMiniLocale } from "../../../components/mini-locale";
+import { getMiniCitation, miniCompareFieldMeta } from "@/src/data";
+import { MINI_COMPARE_STORAGE_KEY, getDefaultMiniCompareSelection, resolveMiniCompareSelection, type MiniCompareSelection } from "../../../lib/mini-preview";
 
 export default function MiniComparePage() {
+  const { t } = useMiniLocale();
+  const [selection, setSelection] = useState<MiniCompareSelection[]>(getDefaultMiniCompareSelection());
+
+  useEffect(() => {
+    const raw = window.localStorage.getItem(MINI_COMPARE_STORAGE_KEY);
+    if (!raw) return;
+    try {
+      setSelection(JSON.parse(raw) as MiniCompareSelection[]);
+    } catch {
+      setSelection(getDefaultMiniCompareSelection());
+    }
+  }, []);
+
+  const products = useMemo(() => resolveMiniCompareSelection(selection).slice(0, 4), [selection]);
+
+  const rows = miniCompareFieldMeta.map((field) => {
+    const values = products.map(({ product, version }) => {
+      const fixedFieldValue =
+        field.key === "company"
+          ? { value: t(product.company), citationId: version.compareFields.company?.citationId ?? Object.values(version.compareFields)[0]?.citationId }
+          : field.key === "productName"
+            ? { value: t(product.name), citationId: version.compareFields.productName?.citationId ?? Object.values(version.compareFields)[0]?.citationId }
+            : field.key === "productType"
+              ? { value: t(product.productType), citationId: version.compareFields.productType?.citationId ?? Object.values(version.compareFields)[0]?.citationId }
+              : field.key === "version"
+                ? { value: version.version, citationId: version.compareFields.version?.citationId ?? Object.values(version.compareFields)[0]?.citationId }
+                : field.key === "publishDate"
+                  ? { value: version.publishDate, citationId: version.compareFields.publishDate?.citationId ?? Object.values(version.compareFields)[0]?.citationId }
+                  : field.key === "effectiveDate"
+                    ? { value: version.effectiveDate, citationId: version.compareFields.effectiveDate?.citationId ?? Object.values(version.compareFields)[0]?.citationId }
+                    : version.compareFields[field.key];
+
+      return fixedFieldValue
+        ? {
+            value: fixedFieldValue.value,
+            citation: getMiniCitation(fixedFieldValue.citationId),
+          }
+        : { value: "—", citation: undefined };
+    });
+
+    return { field, values };
+  });
+
   return (
-    <MiniShell title="产品客观对比" subtitle="不排名、不打分、不推荐；每项都要来源" activeTab="chat">
+    <MiniShell
+      title={{ zhHans: "产品对比结果", zhHant: "產品對比結果" }}
+      subtitle={{ zhHans: "只展示资料差异，不排名、不打分、不推荐", zhHant: "只展示資料差異，不排名、不打分、不推薦" }}
+      activeTab="products"
+    >
       <MiniCard>
-        <h3 style={{ margin: 0, fontSize: 18, color: "#16223b" }}>对比结果</h3>
-        <p style={{ margin: "8px 0 0", color: "#71829f", lineHeight: 1.8 }}>以下仅列资料差异，不构成购买建议。</p>
-        <div style={{ marginTop: 16, overflow: "hidden", borderRadius: 18, border: "1px solid #dbe5f2" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", background: "#f7faff", color: "#71829f", fontWeight: 700, fontSize: 14 }}>
-            {["维度", "A产品", "B产品"].map((header) => (
-              <div key={header} style={{ padding: 14 }}>{header}</div>
-            ))}
-          </div>
-          {rows.map((row) => (
-            <div key={row[0]} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", borderTop: "1px solid #e6edf7", color: "#16223b", fontSize: 14 }}>
-              {row.map((cell) => (
-                <div key={cell} style={{ padding: 14 }}>{cell}</div>
-              ))}
+        <h3 style={sectionTitleStyle}>{t({ zhHans: "已选产品", zhHant: "已選產品" })}</h3>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 }}>
+          {products.map(({ product, version }) => (
+            <div key={`${product.id}-${version.id}`} style={selectedPillStyle}>
+              {t(product.company)} · {t(product.name)} · {version.version}
             </div>
           ))}
         </div>
       </MiniCard>
 
       <MiniCard>
-        <h3 style={{ margin: 0, fontSize: 18, color: "#16223b" }}>差异说明</h3>
-        <ul style={{ margin: "12px 0 0", paddingLeft: 18, color: "#4b5c78", lineHeight: 1.9 }}>
-          <li>A 产品保障地区更广，B 产品年度限额略低。</li>
-          <li>B 产品的历史优惠文件已过期，不能作为当前有效优惠理解。</li>
-          <li>页面仅展示客观资料，不对优劣做判断。</li>
-        </ul>
-        <div style={{ marginTop: 16, padding: 16, borderRadius: 18, background: "#fff8e8", color: "#b15f00" }}>
-          注意事项：不构成购买建议，实际适用性需结合个人情况，以官方条款和最新文件为准。
-        </div>
-        <h4 style={{ margin: "18px 0 10px", fontSize: 16, color: "#16223b" }}>引用来源</h4>
-        <div style={{ display: "grid", gap: 12 }}>
-          {miniCitations.slice(0, 3).map((citation) => (
-            <CitationCard
-              key={citation.id}
-              href={`/mini/citation/${citation.id}`}
-              fileName={citation.fileName}
-              sourceLevel={citation.sourceLevel}
-              pageNumber={citation.pageNumber}
-              version={citation.version}
-              publishDate={citation.publishDate}
-              effectiveDate={citation.effectiveDate}
-              expiryDate={citation.expiryDate}
-              isTraining={citation.isTrainingMaterial}
-              isExpiredPromotion={citation.isExpiredPromotion}
-            />
+        <h3 style={sectionTitleStyle}>{t({ zhHans: "客观对比表", zhHant: "客觀對比表" })}</h3>
+        <div style={{ display: "grid", gap: 12, marginTop: 14 }}>
+          {rows.map((row) => (
+            <div key={row.field.key} style={rowCardStyle}>
+              <div style={{ color: "#16223b", fontWeight: 800 }}>{t(row.field.label)}</div>
+              <div style={{ display: "grid", gap: 10, marginTop: 12 }}>
+                {row.values.map((item, index) => {
+                  const label = products[index] ? `${t(products[index].product.company)} · ${t(products[index].product.name)}` : `产品 ${index + 1}`;
+                  return (
+                    <div key={`${row.field.key}-${label}`} style={cellCardStyle}>
+                      <div style={{ display: "flex", justifyContent: "space-between", gap: 12 }}>
+                        <strong style={{ color: "#4e76df", fontSize: 12 }}>{label}</strong>
+                        {item.citation ? (
+                          <Link href={`/mini/citation/${item.citation.id}`} style={citationLinkStyle}>
+                            {t({ zhHans: "查看来源", zhHant: "查看來源" })}
+                          </Link>
+                        ) : null}
+                      </div>
+                      <div style={{ marginTop: 8, color: "#16223b", lineHeight: 1.6 }}>{item.value}</div>
+                      {item.citation ? (
+                        <div style={{ marginTop: 6, color: "#90a1ba", fontSize: 12 }}>
+                          {t({ zhHans: `页码 P.${item.citation.pageNumber}`, zhHant: `頁碼 P.${item.citation.pageNumber}` })}
+                        </div>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           ))}
         </div>
+      </MiniCard>
+
+      <MiniCard>
+        <h3 style={sectionTitleStyle}>{t({ zhHans: "差异说明", zhHant: "差異說明" })}</h3>
+        <ul style={{ margin: "14px 0 0", paddingLeft: 18, color: "#4b5c78", lineHeight: 1.9 }}>
+          <li>{t({ zhHans: "A 公司产品保障地区更广，B 公司产品更聚焦亚洲及指定地区。", zhHant: "A 公司產品保障地區更廣，B 公司產品更聚焦亞洲及指定地區。" })}</li>
+          <li>{t({ zhHans: "病房级别、自付额和共同保险的设计存在差异，适合先核对计划书及官方条款。", zhHant: "病房級別、自付額和共同保險的設計存在差異，適合先核對計劃書及官方條款。" })}</li>
+          <li>{t({ zhHans: "历史优惠已过期时，仅可作为历史资料参考。", zhHant: "歷史優惠已過期時，僅可作為歷史資料參考。" })}</li>
+        </ul>
+        <div style={noticeStyle}>{t({ zhHans: "仅列资料差异，不构成购买建议。具体以官方文件及持牌顾问说明为准。", zhHant: "僅列資料差異，不構成購買建議。具體以官方文件及持牌顧問說明為準。" })}</div>
       </MiniCard>
     </MiniShell>
   );
 }
+
+const sectionTitleStyle = { margin: 0, fontSize: 18, color: "#16223b" };
+
+const selectedPillStyle = {
+  minHeight: 34,
+  padding: "0 12px",
+  borderRadius: 999,
+  background: "#eef4ff",
+  color: "#4e76df",
+  display: "inline-flex",
+  alignItems: "center",
+  fontSize: 12,
+  fontWeight: 700,
+};
+
+const rowCardStyle = {
+  padding: 16,
+  borderRadius: 18,
+  background: "#f8fbff",
+  border: "1px solid #dbe5f2",
+};
+
+const cellCardStyle = {
+  padding: 14,
+  borderRadius: 16,
+  background: "#ffffff",
+  border: "1px solid #e5edf8",
+};
+
+const citationLinkStyle = {
+  color: "#4e76df",
+  fontSize: 12,
+  fontWeight: 700,
+  textDecoration: "none",
+};
+
+const noticeStyle = {
+  marginTop: 16,
+  padding: 16,
+  borderRadius: 16,
+  background: "#fff8e8",
+  color: "#b15f00",
+  lineHeight: 1.8,
+};

@@ -1,6 +1,6 @@
 # HK Insurance Agent Admin Web Share
 
-当前仓库是已部署演示项目的独立分享版，基于 Next.js 构建，保留原有后台页面和 mock 数据，并在此基础上继续增强为更接近可交付的 MVP 演示版。
+当前仓库是已部署演示项目的独立分享版，基于 `Next.js` 构建，保留现有后台页面与 mock 数据，并持续增强为更接近可交付的 MVP 演示版。
 
 ## 运行方式
 
@@ -15,7 +15,7 @@ npm run dev
 - `/login`
 - `/admin`
 - `/broker`
-- `/mini/home`
+- `/mini/chat`
 
 ## 演示模式
 
@@ -33,7 +33,7 @@ npm run dev
 - `/login`
 - `/admin`
 - `/broker`
-- `/mini/home`
+- `/mini/chat`
 
 ## 平台后台主要路由
 
@@ -81,35 +81,56 @@ npm run dev
 ## 小程序端 Web 预览路由
 
 - `/mini`
-- `/mini/home`
 - `/mini/chat`
-- `/mini/knowledge`
-- `/mini/knowledge/category`
-- `/mini/knowledge/detail`
 - `/mini/products`
 - `/mini/products/[id]`
 - `/mini/compare/select`
 - `/mini/compare`
+- `/mini/knowledge`
+- `/mini/knowledge/[category]`
+- `/mini/knowledge/category`
+- `/mini/knowledge/detail`
 - `/mini/history`
 - `/mini/history/[id]`
 - `/mini/upload`
 - `/mini/settings`
 - `/mini/citation/[id]`
+- `/mini/home`
 
-## 当前已补的重点能力
+说明：
 
-- 根入口新增四个卡片：登录、平台后台、经纪公司后台、小程序端预览
-- 登录页支持三种演示角色快捷进入
+- `/mini` 默认跳转到 `/mini/chat`
+- `/mini/home` 为兼容旧链接保留，当前会跳转到 `/mini/chat`
+- `/mini/knowledge/category` 和 `/mini/knowledge/detail` 为兼容旧链接保留
+
+## 当前已实现的重点能力
+
+- 根入口包含 4 个入口卡片：登录、平台后台、经纪公司后台、小程序端预览
+- 登录页支持 3 种演示角色快捷进入
 - 前端 mock RBAC：
   - `PLATFORM_ADMIN` 可访问 `/admin/*`
   - `BROKER_ADMIN` 与 `BROKER_USER` 可访问 `/broker/*`
   - `/mini/*` 不需要登录
-  - 未登录访问后台会跳 `/login`
+  - 未登录访问后台会跳转 `/login`
   - 非授权访问显示 `/forbidden`
-- 小程序端 Web 预览使用手机壳布局
-- 所有小程序问答演示答案都带引用来源卡片
+- 小程序端 Web 预览改为“经纪人移动端香港保险知识问答助手”
+- 小程序端默认首页为 `/mini/chat`
+- 小程序端 TabBar 调整为：问答 / 产品 / 知识库 / 记录
+- 问答页支持：
+  - 快捷提问模板
+  - 上传问答文件底部抽屉
+  - 复制完整回答
+  - 复制客户版回答
+  - 查看来源
+  - 继续追问
+- 产品页支持：
+  - 搜索
+  - 筛选
+  - 加入对比
+  - 浮动对比栏
 - 产品对比页不出现推荐、排名、评分文案
-- mock 数据已集中到 `src/data/*`
+- 所有小程序问答演示回答都带引用来源卡片
+- mock 数据集中到 `src/data/*`
 
 ## 数据文件
 
@@ -126,5 +147,5 @@ npm run dev
 
 ## 说明
 
-- 当前项目以演示体验为主，部分旧页面仍保留原有 mock 骨架并持续增量优化
-- 现阶段重点是统一布局、权限、演示入口、小程序预览和关键后台流程展示
+- 当前项目以演示体验为主，部分旧页面仍保留原有 mock 骨架并持续做增量优化
+- 当前重点是统一布局、权限、演示入口、小程序问答助手体验和关键后台流程展示

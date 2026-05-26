@@ -1,40 +1,89 @@
+"use client";
+
 import Link from "next/link";
-import type { CSSProperties } from "react";
+import { useMemo, useState } from "react";
 import { MiniCard, MiniShell } from "../../../components/mini-shell";
-import { miniCategories } from "@/src/data";
+import { useMiniLocale } from "../../../components/mini-locale";
+import { miniCategories, miniKnowledgeItems } from "@/src/data";
 
 export default function MiniKnowledgePage() {
+  const { t } = useMiniLocale();
+  const [keyword, setKeyword] = useState("");
+
+  const categories = useMemo(() => {
+    if (!keyword.trim()) return miniCategories;
+    return miniCategories.filter((category) => {
+      const text = `${t(category.title)} ${t(category.topics)}`.toLowerCase();
+      return text.includes(keyword.trim().toLowerCase());
+    });
+  }, [keyword, t]);
+
   return (
-    <MiniShell title="分类知识库" subtitle="一期支持简体中文 / 繁体中文" activeTab="knowledge">
-      {miniCategories.map((category) => (
-        <Link key={category.id} href="/mini/knowledge/category">
-          <MiniCard>
-            <div style={{ display: "grid", gridTemplateColumns: "60px minmax(0,1fr) 20px", gap: 16, alignItems: "center" }}>
-              <div style={{ width: 60, height: 60, borderRadius: "50%", background: "#f0f4fb", display: "grid", placeItems: "center", fontWeight: 800, color: "#16223b" }}>{category.badge}</div>
-              <div>
-                <div style={{ color: "#16223b", fontWeight: 800, fontSize: 18 }}>{category.title}</div>
-                <div style={{ color: "#71829f", marginTop: 6, lineHeight: 1.7 }}>{category.topics}</div>
-                <div style={{ display: "flex", gap: 10, marginTop: 10 }}>
-                  <span style={tagStyle}>常见问题</span>
-                  <span style={{ ...tagStyle, color: "#4e76df", background: "#eef4ff" }}>流程</span>
+    <MiniShell
+      title={{ zhHans: "知识库", zhHant: "知識庫" }}
+      subtitle={{ zhHans: "快速进入高频知识分类，不做内容门户", zhHant: "快速進入高頻知識分類，不做內容門戶" }}
+      activeTab="knowledge"
+    >
+      <MiniCard>
+        <div style={searchBoxStyle}>
+          <input
+            value={keyword}
+            onChange={(event) => setKeyword(event.target.value)}
+            placeholder={t({ zhHans: "搜索知识点，例如：冷静期、核保、保单贷款", zhHant: "搜索知識點，例如：冷靜期、核保、保單貸款" })}
+            style={searchInputStyle}
+          />
+        </div>
+      </MiniCard>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+        {categories.map((category) => {
+          const count = miniKnowledgeItems.filter((item) => item.categoryId === category.id).length || 1;
+          return (
+            <Link key={category.id} href={`/mini/knowledge/${category.id}`} style={{ textDecoration: "none" }}>
+              <MiniCard>
+                <div style={{ display: "grid", gap: 12 }}>
+                  <div style={badgeStyle}>{category.badge}</div>
+                  <div style={{ color: "#16223b", fontWeight: 800, fontSize: 16, lineHeight: 1.4 }}>{t(category.title)}</div>
+                  <div style={{ color: "#71829f", fontSize: 13, lineHeight: 1.7 }}>{t(category.topics)}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between", gap: 12, color: "#90a1ba", fontSize: 12 }}>
+                    <span>{t({ zhHans: `${count} 个高频问题`, zhHant: `${count} 個高頻問題` })}</span>
+                    <span>{t({ zhHans: "最近更新 5 月", zhHant: "最近更新 5 月" })}</span>
+                  </div>
                 </div>
-              </div>
-              <span style={{ color: "#9badc9", fontSize: 22 }}>›</span>
-            </div>
-          </MiniCard>
-        </Link>
-      ))}
+              </MiniCard>
+            </Link>
+          );
+        })}
+      </div>
     </MiniShell>
   );
 }
 
-const tagStyle: CSSProperties = {
-  minHeight: 30,
-  padding: "0 14px",
-  borderRadius: 999,
-  background: "#f4f7fc",
-  color: "#71829f",
-  display: "inline-flex",
+const searchBoxStyle = {
+  minHeight: 54,
+  borderRadius: 18,
+  background: "#f4f8fe",
+  border: "1px solid #dbe5f2",
+  display: "grid",
   alignItems: "center",
-  fontSize: 12,
+  padding: "0 16px",
+};
+
+const searchInputStyle = {
+  border: 0,
+  outline: "none",
+  background: "transparent",
+  fontSize: 14,
+  color: "#16223b",
+};
+
+const badgeStyle = {
+  width: 44,
+  height: 44,
+  borderRadius: 999,
+  background: "#eef3ff",
+  display: "grid",
+  placeItems: "center",
+  fontWeight: 800,
+  color: "#16223b",
 };

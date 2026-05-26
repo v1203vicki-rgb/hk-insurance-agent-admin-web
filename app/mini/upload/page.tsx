@@ -1,19 +1,58 @@
-import type { CSSProperties } from "react";
+"use client";
+
 import { MiniCard, MiniShell } from "../../../components/mini-shell";
+import { useMiniLocale } from "../../../components/mini-locale";
+import { miniUploadGuides, miniUploadStates } from "@/src/data";
 
 export default function MiniUploadPage() {
+  const { t } = useMiniLocale();
+
   return (
-    <MiniShell title="上传资料" subtitle="仅支持问答相关资料和普通图片问题" activeTab="chat">
+    <MiniShell
+      title={{ zhHans: "上传问答文件", zhHant: "上傳問答文件" }}
+      subtitle={{ zhHans: "仅用于本次咨询问答，上传文件保存 1 个月", zhHant: "僅用於本次諮詢問答，上傳文件保存 1 個月" }}
+      activeTab="chat"
+    >
       <MiniCard>
-        <div style={{ padding: 16, borderRadius: 18, background: "#fff8e8", color: "#b15f00", lineHeight: 1.8 }}>
-          请勿上传身份证件、通行证、银行资料、医疗报告、体检报告、诊断证明、理赔文件等敏感资料。系统仅支持产品资料、计划书、保单摘要及普通图片问题。
-        </div>
-        <div style={{ marginTop: 18, display: "grid", gap: 12 }}>
-          <div style={uploadBoxStyle}>产品小册子.pdf</div>
-          <div style={uploadBoxStyle}>计划书.jpg</div>
-          <div style={uploadBoxStyle}>保单摘要.png</div>
-          <div style={{ padding: 14, borderRadius: 18, background: "#f7faff", color: "#16223b" }}>
-            上传进度：2 / 3 已完成，当前文件解析中...
+        <div style={warningStyle}>{t(miniUploadGuides.warning)}</div>
+
+        <div style={{ display: "grid", gap: 16, marginTop: 18 }}>
+          <div>
+            <div style={sectionTitleStyle}>{t({ zhHans: "允许上传类型", zhHant: "允許上傳類型" })}</div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
+              {miniUploadGuides.allowed.map((item) => (
+                <span key={item.zhHans} style={tagStyle(true)}>
+                  {t(item)}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div style={sectionTitleStyle}>{t({ zhHans: "禁止上传类型", zhHant: "禁止上傳類型" })}</div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10 }}>
+              {miniUploadGuides.blocked.map((item) => (
+                <span key={item.zhHans} style={tagStyle(false)}>
+                  {t(item)}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <div style={sectionTitleStyle}>{t({ zhHans: "上传状态示例", zhHant: "上傳狀態示例" })}</div>
+            <div style={{ display: "grid", gap: 10, marginTop: 10 }}>
+              {miniUploadStates.map((item) => (
+                <div key={item.id} style={stateCardStyle}>
+                  <strong style={{ color: "#16223b" }}>{t(item.label)}</strong>
+                  {item.id === "failed" ? (
+                    <div style={{ marginTop: 6, color: "#dc2626", fontSize: 12, lineHeight: 1.7 }}>
+                      {t({ zhHans: "文件暂无法解析，请尝试上传更清晰的 PDF 或图片。", zhHant: "文件暫無法解析，請嘗試上傳更清晰的 PDF 或圖片。" })}
+                    </div>
+                  ) : null}
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </MiniCard>
@@ -21,13 +60,35 @@ export default function MiniUploadPage() {
   );
 }
 
-const uploadBoxStyle: CSSProperties = {
-  minHeight: 54,
+const warningStyle = {
+  padding: 16,
   borderRadius: 18,
-  border: "1px dashed #bdd0e7",
-  background: "#f7faff",
-  display: "grid",
+  background: "#fff8e8",
+  color: "#b15f00",
+  lineHeight: 1.8,
+};
+
+const sectionTitleStyle = {
+  color: "#16223b",
+  fontSize: 16,
+  fontWeight: 800,
+};
+
+const tagStyle = (allowed: boolean) => ({
+  minHeight: 32,
+  padding: "0 12px",
+  borderRadius: 999,
+  background: allowed ? "#eef7ff" : "#fff1f2",
+  color: allowed ? "#2563eb" : "#dc2626",
+  display: "inline-flex",
   alignItems: "center",
-  padding: "0 16px",
-  color: "#6d7f9c",
+  fontSize: 12,
+  fontWeight: 700,
+});
+
+const stateCardStyle = {
+  padding: 14,
+  borderRadius: 16,
+  background: "#f7faff",
+  border: "1px solid #dbe5f2",
 };

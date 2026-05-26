@@ -34,8 +34,8 @@ const brokerItems: NavItem[] = [
 ];
 
 const miniItems: NavItem[] = [
-  { href: "/mini/home", label: "首页" },
   { href: "/mini/chat", label: "问答" },
+  { href: "/mini/products", label: "产品" },
   { href: "/mini/knowledge", label: "知识库" },
   { href: "/mini/history", label: "记录" },
 ];
@@ -80,20 +80,21 @@ const routeTitles: Array<{ prefix: string; label: string }> = [
   { prefix: "/broker/users", label: "经纪人账号" },
   { prefix: "/broker/settings", label: "公司设置" },
   { prefix: "/broker", label: "经纪公司后台" },
-  { prefix: "/mini/home", label: "首页" },
-  { prefix: "/mini/chat", label: "智能问答" },
-  { prefix: "/mini/knowledge/category", label: "分类详情" },
-  { prefix: "/mini/knowledge/detail", label: "知识详情" },
-  { prefix: "/mini/knowledge", label: "分类知识库" },
+  { prefix: "/mini/chat", label: "香港保险知识助手" },
   { prefix: "/mini/products/", label: "产品详情" },
-  { prefix: "/mini/products", label: "产品列表" },
+  { prefix: "/mini/products", label: "产品页" },
   { prefix: "/mini/compare/select", label: "选择产品" },
   { prefix: "/mini/compare", label: "产品对比" },
-  { prefix: "/mini/history/", label: "咨询记录详情" },
-  { prefix: "/mini/history", label: "咨询记录" },
-  { prefix: "/mini/upload", label: "上传资料" },
-  { prefix: "/mini/settings", label: "我的 / 设置" },
-  { prefix: "/mini/citation/", label: "引用来源详情" },
+  { prefix: "/mini/knowledge/detail", label: "知识详情" },
+  { prefix: "/mini/knowledge/category", label: "分类过渡页" },
+  { prefix: "/mini/knowledge/", label: "分类问题列表" },
+  { prefix: "/mini/knowledge", label: "知识库" },
+  { prefix: "/mini/history/", label: "历史详情" },
+  { prefix: "/mini/history", label: "历史记录" },
+  { prefix: "/mini/upload", label: "上传问答文件" },
+  { prefix: "/mini/settings", label: "设置与隐私" },
+  { prefix: "/mini/citation/", label: "来源详情" },
+  { prefix: "/mini/home", label: "问答首页兼容入口" },
   { prefix: "/mini", label: "小程序端预览" },
   { prefix: "/login", label: "登录页" },
   { prefix: "/", label: "项目入口" },
@@ -113,23 +114,19 @@ export function getRouteTitle(pathname: string) {
 export function buildBreadcrumbs(pathname: string) {
   if (pathname.startsWith("/admin")) {
     const items = [{ href: "/admin", label: "平台管理后台" }];
-    if (pathname !== "/admin") {
-      items.push({ href: pathname, label: getRouteTitle(pathname) });
-    }
+    if (pathname !== "/admin") items.push({ href: pathname, label: getRouteTitle(pathname) });
     return items;
   }
 
   if (pathname.startsWith("/broker")) {
     const items = [{ href: "/broker", label: "经纪公司后台" }];
-    if (pathname !== "/broker") {
-      items.push({ href: pathname, label: getRouteTitle(pathname) });
-    }
+    if (pathname !== "/broker") items.push({ href: pathname, label: getRouteTitle(pathname) });
     return items;
   }
 
   if (pathname.startsWith("/mini")) {
-    const items = [{ href: "/mini/home", label: "小程序端预览" }];
-    if (pathname !== "/mini" && pathname !== "/mini/home") {
+    const items = [{ href: "/mini/chat", label: "小程序端预览" }];
+    if (pathname !== "/mini" && pathname !== "/mini/chat") {
       items.push({ href: pathname, label: getRouteTitle(pathname) });
     }
     return items;

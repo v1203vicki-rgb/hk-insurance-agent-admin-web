@@ -131,7 +131,7 @@ export default function LoginPage() {
             <Link href="/broker" style={secondaryLinkStyle}>
               进入经纪公司后台
             </Link>
-            <Link href="/mini/home" style={secondaryLinkStyle}>
+            <Link href="/mini/chat" style={secondaryLinkStyle}>
               小程序端预览
             </Link>
           </div>
