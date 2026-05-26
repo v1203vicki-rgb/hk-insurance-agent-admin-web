@@ -62,7 +62,7 @@ export default function MiniProductsPage() {
         next = prev.filter((item) => !(item.productId === product.id && item.versionId === currentVersion.id));
       } else {
         if (prev.length >= 4) {
-          setToast(t({ zhHans: "一次最多选择 4 个产品", zhHant: "一次最多選擇 4 個產品" }));
+          setToast("一次最多选择 4 个产品");
           return prev;
         }
         next = [...prev, { productId: product.id, versionId: currentVersion.id }];
@@ -87,12 +87,7 @@ export default function MiniProductsPage() {
 
       <MiniCard>
         <div style={searchBoxStyle}>
-          <input
-            value={keyword}
-            onChange={(event) => setKeyword(event.target.value)}
-            placeholder={t({ zhHans: "搜索产品名、保险公司、产品类型", zhHant: "搜索產品名、保險公司、產品類型" })}
-            style={searchInputStyle}
-          />
+          <input value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder={t({ zhHans: "搜索产品名、保险公司、产品类型", zhHant: "搜索產品名、保險公司、產品類型" })} style={searchInputStyle} />
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 14 }}>
           {[
@@ -118,29 +113,40 @@ export default function MiniProductsPage() {
         const selectedNow = selected.some((item) => item.productId === product.id && item.versionId === currentVersion.id);
         return (
           <MiniCard key={product.id}>
-            <div style={{ display: "grid", gap: 10 }}>
+            <div style={{ display: "grid", gap: 12 }}>
               <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start" }}>
                 <div>
                   <div style={{ color: "#4e76df", fontSize: 12, fontWeight: 700 }}>{t(product.company)}</div>
-                  <div style={{ marginTop: 6, color: "#16223b", fontSize: 18, fontWeight: 800 }}>{t(product.name)}</div>
+                  <div style={{ marginTop: 4, color: "#16223b", fontSize: 18, fontWeight: 800 }}>{t(product.name)}</div>
+                  <div style={{ marginTop: 6, color: "#71829f", fontSize: 13 }}>{t(product.productType)}</div>
                 </div>
-                <span style={statusStyle(product.hasPromotion)}>{product.hasPromotion ? t({ zhHans: "有优惠", zhHant: "有優惠" }) : t(product.status)}</span>
+                <span style={statusStyle(product.hasPromotion)}>{product.hasPromotion ? "有优惠" : t(product.status)}</span>
               </div>
-              <div style={{ color: "#71829f", fontSize: 14 }}>{t(product.productType)}</div>
-              <div style={{ display: "grid", gap: 6, color: "#6d7f9c", fontSize: 12, lineHeight: 1.7 }}>
-                <span>{t({ zhHans: `当前版本：${currentVersion.version}`, zhHant: `當前版本：${currentVersion.version}` })}</span>
-                <span>{t({ zhHans: `生效日期：${currentVersion.effectiveDate}`, zhHant: `生效日期：${currentVersion.effectiveDate}` })}</span>
-                <span>{t({ zhHans: `最近更新：${product.updatedAt}`, zhHant: `最近更新：${product.updatedAt}` })}</span>
+
+              <div style={metaGridStyle}>
+                <div style={metaItemStyle}>
+                  <span style={metaLabelStyle}>当前版本</span>
+                  <strong style={metaValueStyle}>{currentVersion.version}</strong>
+                </div>
+                <div style={metaItemStyle}>
+                  <span style={metaLabelStyle}>生效日期</span>
+                  <strong style={metaValueStyle}>{currentVersion.effectiveDate}</strong>
+                </div>
+                <div style={metaItemStyle}>
+                  <span style={metaLabelStyle}>最近更新</span>
+                  <strong style={metaValueStyle}>{product.updatedAt}</strong>
+                </div>
               </div>
-              <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 4 }}>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
                 <Link href={`/mini/products/${product.id}`} style={ghostButtonStyle}>
-                  {t({ zhHans: "查看详情", zhHant: "查看詳情" })}
+                  查看详情
                 </Link>
                 <Link href={`/mini/chat?productId=${product.id}&question=${encodeURIComponent(`请解释 ${t(product.name)} 的核心条款`)}`} style={ghostButtonStyle}>
-                  {t({ zhHans: "问这个产品", zhHant: "問這個產品" })}
+                  问这个产品
                 </Link>
                 <button onClick={() => toggleCompare(product)} style={solidButtonStyle(selectedNow)}>
-                  {selectedNow ? t({ zhHans: "已加入对比", zhHant: "已加入對比" }) : t({ zhHans: "加入对比", zhHant: "加入對比" })}
+                  {selectedNow ? "已加入对比" : "加入对比"}
                 </button>
               </div>
             </div>
@@ -166,16 +172,12 @@ export default function MiniProductsPage() {
           }}
         >
           <div style={{ display: "grid", gap: 4 }}>
-            <strong>{t({ zhHans: `已选 ${selected.length} 个产品`, zhHant: `已選 ${selected.length} 個產品` })}</strong>
-            <span style={{ color: "#c7d2e6", fontSize: 12 }}>
-              {selected.length < 2
-                ? t({ zhHans: "至少选择 2 个产品后才能开始对比", zhHant: "至少選擇 2 個產品後才能開始對比" })
-                : t({ zhHans: "可进入对比页查看资料差异", zhHant: "可進入對比頁查看資料差異" })}
-            </span>
+            <strong>已选 {selected.length} 个产品</strong>
+            <span style={{ color: "#c7d2e6", fontSize: 12 }}>{selected.length < 2 ? "至少选择 2 个产品后才能开始对比" : "可进入对比页查看资料差异"}</span>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             <button onClick={clearSelected} style={clearButtonStyle}>
-              {t({ zhHans: "清空", zhHant: "清空" })}
+              清空
             </button>
             <Link
               href={selected.length >= 2 ? "/mini/compare" : "#"}
@@ -188,7 +190,7 @@ export default function MiniProductsPage() {
                 pointerEvents: selected.length >= 2 ? "auto" : "none",
               }}
             >
-              {t({ zhHans: "开始对比", zhHant: "開始對比" })}
+              开始对比
             </Link>
           </div>
         </div>
@@ -234,29 +236,55 @@ const chipStyle = (active: boolean) => ({
   fontWeight: 700,
 });
 
+const metaGridStyle = {
+  display: "grid",
+  gridTemplateColumns: "repeat(3, minmax(0, 1fr))",
+  gap: 8,
+};
+
+const metaItemStyle = {
+  padding: 10,
+  borderRadius: 14,
+  background: "#f8fbff",
+  border: "1px solid #e3ecf8",
+  display: "grid",
+  gap: 4,
+};
+
+const metaLabelStyle = {
+  color: "#8a9ab3",
+  fontSize: 11,
+};
+
+const metaValueStyle = {
+  color: "#16223b",
+  fontSize: 13,
+};
+
 const ghostButtonStyle = {
-  minHeight: 38,
-  padding: "0 14px",
+  minHeight: 40,
+  padding: "0 12px",
   borderRadius: 14,
   border: "1px solid #dbe5f2",
   background: "#f7faff",
   color: "#16223b",
   display: "inline-flex",
   alignItems: "center",
+  justifyContent: "center",
   textDecoration: "none",
   fontWeight: 700,
-  fontSize: 13,
+  fontSize: 12,
 };
 
 const solidButtonStyle = (active: boolean) => ({
   border: 0,
-  minHeight: 38,
-  padding: "0 14px",
+  minHeight: 40,
+  padding: "0 12px",
   borderRadius: 14,
   background: active ? "#dfe9ff" : "#111a2d",
   color: active ? "#214cb8" : "#fff",
   fontWeight: 700,
-  fontSize: 13,
+  fontSize: 12,
 });
 
 const clearButtonStyle = {

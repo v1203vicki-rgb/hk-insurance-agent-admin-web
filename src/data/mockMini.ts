@@ -557,7 +557,7 @@ export const miniHistorySessions: MiniSession[] = [
           scenarios: [{ zhHans: "适合经纪人先快速核对保障范围、病房级别和优惠状态。", zhHant: "適合經紀人先快速核對保障範圍、病房級別和優惠狀態。" }],
           cautions: [
             { zhHans: "历史优惠不能视为当前有效优惠。", zhHant: "歷史優惠不能視為當前有效優惠。" },
-            { zhHans: "最終仍需以官方條款及最新版本文件為準。", zhHant: "最終仍需以官方條款及最新版本文件為準。" },
+            { zhHans: "最终仍需以官方条款及最新版本文件为准。", zhHant: "最終仍需以官方條款及最新版本文件為準。" },
           ],
           followUps: [
             { zhHans: "还有哪些注意事项？", zhHant: "還有哪些注意事項？" },

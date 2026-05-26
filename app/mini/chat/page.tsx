@@ -66,7 +66,7 @@ function MiniChatPageClient() {
       miniHistorySessions.find((session) => session.title.zhHans === queryQuestion) ??
       miniHistorySessions.find((session) => queryQuestion.includes(session.title.zhHans.slice(0, 4)));
     if (matched) setActiveSessionId(matched.id);
-  }, [queryQuestion]);
+  }, [queryQuestion, sessionId]);
 
   const currentProduct = productId ? getMiniProduct(productId) : undefined;
   const activeSession = getMiniSession(activeSessionId) ?? getMiniSession("session_2")!;
@@ -77,7 +77,7 @@ function MiniChatPageClient() {
         structuredAnswer: {
           shortConclusion: knowledgeItem.answer,
           details: [knowledgeItem.answer],
-          scenarios: [{ zhHans: "适合先作为经纪人快速解释口径。", zhHant: "適合作為經紀人快速解釋口徑。" }],
+          scenarios: [{ zhHans: "适合作为经纪人快速解释口径。", zhHant: "適合作為經紀人快速解釋口徑。" }],
           cautions: [knowledgeItem.caution],
           followUps: [
             { zhHans: "和其他产品有什么区别？", zhHant: "和其他產品有什麼區別？" },
@@ -133,16 +133,12 @@ function MiniChatPageClient() {
       await navigator.clipboard.writeText(text);
       setToast(successText);
     } catch {
-      setToast(t({ zhHans: "复制失败，请手动复制", zhHant: "複製失敗，請手動複製" }));
+      setToast("复制失败，请手动复制");
     }
   };
 
   const fullAnswerText = answer
-    ? [
-        t(answer.shortConclusion),
-        ...answer.details.map((item) => `- ${t(item)}`),
-        ...answer.cautions.map((item) => `注意：${t(item)}`),
-      ].join("\n")
+    ? [t(answer.shortConclusion), ...answer.details.map((item) => `- ${t(item)}`), ...answer.cautions.map((item) => `注意：${t(item)}`)].join("\n")
     : "";
 
   const quickPrompts = miniQuickPromptTemplates.map((item) => ({
@@ -157,11 +153,11 @@ function MiniChatPageClient() {
         id: `${prev.length + 1}`,
         fileName,
         status,
-        expiresText: t({ zhHans: "文件将在 1 个月后删除", zhHant: "文件將在 1 個月後刪除" }),
+        expiresText: "文件将在 1 个月后删除",
       },
     ]);
     setDrawerOpen(false);
-    setToast(t({ zhHans: "附件已加入当前问答", zhHant: "附件已加入當前問答" }));
+    setToast("附件已加入当前问答");
   };
 
   return (
@@ -171,20 +167,23 @@ function MiniChatPageClient() {
       activeTab="chat"
       action={
         <Link href="/mini/settings" style={settingsButtonStyle}>
-          {t({ zhHans: "设置", zhHant: "設置" })}
+          设置
         </Link>
       }
     >
       {toast ? <Toast text={toast} /> : null}
 
       <MiniCard>
-        <div style={{ display: "grid", gap: 12 }}>
+        <div style={{ display: "grid", gap: 14 }}>
           <div style={inputShellStyle}>
-            {currentProduct ? (
-              <div style={contextPillStyle}>
-                {t({ zhHans: `当前上下文：${t(currentProduct.name)}`, zhHant: `當前上下文：${t(currentProduct.name)}` })}
+            <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "flex-start" }}>
+              <div style={{ minWidth: 0 }}>
+                <div style={{ color: "#16223b", fontWeight: 800, fontSize: 18 }}>快速提问</div>
+                <div style={{ marginTop: 6, color: "#6d7f9c", fontSize: 12, lineHeight: 1.6 }}>可直接问条款、流程、优惠和产品差异</div>
               </div>
-            ) : null}
+              {currentProduct ? <div style={contextPillStyle}>{t(currentProduct.name)}</div> : null}
+            </div>
+
             {attachments.length ? (
               <div style={{ display: "grid", gap: 10 }}>
                 {attachments.map((attachment) => (
@@ -195,21 +194,22 @@ function MiniChatPageClient() {
                       <span style={{ display: "block", color: "#90a1ba", fontSize: 12, marginTop: 4 }}>{attachment.expiresText}</span>
                     </div>
                     <button onClick={() => setAttachments((prev) => prev.filter((item) => item.id !== attachment.id))} style={deleteAttachmentStyle}>
-                      {t({ zhHans: "删除附件", zhHant: "刪除附件" })}
+                      删除附件
                     </button>
                   </div>
                 ))}
               </div>
             ) : null}
+
             <textarea
               value={input}
               onChange={(event) => setInput(event.target.value)}
               placeholder={t({ zhHans: "输入保险问题，例如：A产品冷静期多久？", zhHant: "輸入保險問題，例如：A產品冷靜期多久？" })}
               style={textareaStyle}
             />
-            <div style={{ display: "flex", gap: 10 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "92px 1fr", gap: 10 }}>
               <button onClick={() => setDrawerOpen(true)} style={secondaryActionStyle}>
-                {t({ zhHans: "附件", zhHant: "附件" })}
+                附件
               </button>
               <button
                 onClick={() => {
@@ -217,56 +217,57 @@ function MiniChatPageClient() {
                     miniQuickPromptTemplates.find((item) => item.question === input) ??
                     miniQuickPromptTemplates.find((item) => input.includes(item.question.slice(0, 4)));
                   if (matched?.targetSessionId) setActiveSessionId(matched.targetSessionId);
-                  setToast(t({ zhHans: "已生成演示回答", zhHant: "已生成演示回答" }));
+                  setToast("已生成演示回答");
                 }}
                 style={primaryActionStyle}
               >
-                {t({ zhHans: "发送", zhHant: "發送" })}
+                发送问题
               </button>
             </div>
           </div>
 
-          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-            {quickPrompts.map((prompt) => (
-              <button
-                key={prompt.id}
-                onClick={() => {
-                  setInput(prompt.question);
-                  if (prompt.targetSessionId) setActiveSessionId(prompt.targetSessionId);
-                }}
-                style={promptChipStyle}
-              >
-                {prompt.text}
-              </button>
-            ))}
+          <div style={{ display: "grid", gap: 10 }}>
+            <div style={{ color: "#16223b", fontSize: 13, fontWeight: 700 }}>快捷提问</div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {quickPrompts.map((prompt) => (
+                <button
+                  key={prompt.id}
+                  onClick={() => {
+                    setInput(prompt.question);
+                    if (prompt.targetSessionId) setActiveSessionId(prompt.targetSessionId);
+                  }}
+                  style={promptChipStyle}
+                >
+                  {prompt.text}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </MiniCard>
 
       <MiniCard>
-        <div style={{ display: "grid", gap: 12 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", gap: 12, alignItems: "center" }}>
+        <div style={{ display: "grid", gap: 14 }}>
+          <div style={trustPanelStyle}>
             <div>
-              <div style={{ color: "#16223b", fontSize: 18, fontWeight: 800 }}>{t({ zhHans: "回答卡片", zhHant: "回答卡片" })}</div>
-              <div style={{ marginTop: 6, color: "#6d7f9c", fontSize: 12 }}>
-                {trustSummary.sourceCount > 0
-                  ? t({ zhHans: `已找到 ${trustSummary.sourceCount} 个来源`, zhHant: `已找到 ${trustSummary.sourceCount} 個來源` })
-                  : t({ zhHans: "未找到足够依据", zhHant: "未找到足夠依據" })}
-              </div>
+              <div style={{ color: "#16223b", fontSize: 18, fontWeight: 800 }}>回答卡片</div>
+              <div style={{ marginTop: 6, color: "#6d7f9c", fontSize: 12 }}>{trustSummary.sourceCount > 0 ? `已找到 ${trustSummary.sourceCount} 个来源` : "未找到足够依据"}</div>
             </div>
-            <span style={trustBadgeStyle}>{trustSummary.hasOfficialTerms ? t({ zhHans: "含官方条款", zhHant: "含官方條款" }) : t({ zhHans: "来源一般", zhHant: "來源一般" })}</span>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", justifyContent: "flex-end" }}>
+              <span style={trustBadgeStyle}>{trustSummary.hasOfficialTerms ? "含官方条款" : "来源一般"}</span>
+              {trustSummary.hasLatest ? <span style={minorInfoBadgeStyle}>含最新版本</span> : null}
+            </div>
           </div>
 
-          {trustSummary.hasLatest ? <div style={hintGoodStyle}>{t({ zhHans: "含最新版本", zhHant: "含最新版本" })}</div> : null}
-          {trustSummary.hasTraining ? <div style={hintWarnStyle}>{t({ zhHans: "含内部培训资料，需以官方文件为准", zhHant: "含內部培訓資料，需以官方文件為準" })}</div> : null}
+          {trustSummary.hasTraining ? <div style={hintWarnStyle}>含内部培训资料，需以官方文件为准</div> : null}
 
           {answer ? (
             <>
-              <Section title={t({ zhHans: "简短结论", zhHant: "簡短結論" })}>
+              <Section title="简短结论">
                 <p style={bodyTextStyle}>{t(answer.shortConclusion)}</p>
               </Section>
 
-              <Section title={t({ zhHans: "重点说明", zhHant: "重點說明" })}>
+              <Section title="重点说明">
                 <ul style={listStyle}>
                   {answer.details.map((item) => (
                     <li key={item.zhHans}>{t(item)}</li>
@@ -274,8 +275,8 @@ function MiniChatPageClient() {
                 </ul>
               </Section>
 
-                    {answer.comparisonTable?.length ? (
-                <Section title={t({ zhHans: "对比表", zhHant: "對比表" })}>
+              {answer.comparisonTable?.length ? (
+                <Section title="对比表">
                   <div style={{ display: "grid", gap: 8 }}>
                     {answer.comparisonTable.map((row: NonNullable<StructuredAnswer["comparisonTable"]>[number]) => (
                       <div key={row.dimension.zhHans} style={comparisonRowStyle}>
@@ -288,7 +289,7 @@ function MiniChatPageClient() {
                 </Section>
               ) : null}
 
-              <Section title={t({ zhHans: "注意事项", zhHant: "注意事項" })}>
+              <Section title="注意事项">
                 <ul style={listStyle}>
                   {answer.cautions.map((item) => (
                     <li key={item.zhHans}>{t(item)}</li>
@@ -296,19 +297,17 @@ function MiniChatPageClient() {
                 </ul>
               </Section>
 
-              {answer.riskNotice ? (
-                <div style={hintWarnStyle}>{t(answer.riskNotice)}</div>
-              ) : null}
+              {answer.riskNotice ? <div style={hintWarnStyle}>{t(answer.riskNotice)}</div> : null}
 
-              <Section title={t({ zhHans: "引用来源", zhHant: "引用來源" })}>
-                <div style={{ display: "grid", gap: 12 }}>
+              <Section title="引用来源">
+                <div style={{ display: "grid", gap: 10 }}>
                   {citations.map((citation) => (
                     <CitationCard key={citation.id} href={`/mini/citation/${citation.id}`} citation={citation} />
                   ))}
                 </div>
               </Section>
 
-              <Section title={t({ zhHans: "追问建议", zhHant: "追問建議" })}>
+              <Section title="追问建议">
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   {(answer.followUps ?? []).map((item) => (
                     <button key={item.zhHans} onClick={() => setInput(t(item))} style={followUpButtonStyle}>
@@ -320,25 +319,25 @@ function MiniChatPageClient() {
             </>
           ) : null}
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 8 }}>
-            <button onClick={() => copyText(fullAnswerText, t({ zhHans: "已复制完整回答", zhHant: "已複製完整回答" }))} style={secondaryActionStyle}>
-              {t({ zhHans: "复制完整回答", zhHant: "複製完整回答" })}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 4 }}>
+            <button onClick={() => copyText(fullAnswerText, "已复制完整回答")} style={secondaryActionStyle}>
+              复制完整回答
             </button>
-            <button onClick={() => copyText(customerAnswer, t({ zhHans: "已复制客户版回答", zhHant: "已複製客戶版回答" }))} style={primaryActionStyle}>
-              {t({ zhHans: "复制客户版回答", zhHant: "複製客戶版回答" })}
+            <button onClick={() => copyText(customerAnswer, "已复制客户版回答")} style={primaryActionStyle}>
+              复制客户版回答
             </button>
             <Link href={citations[0] ? `/mini/citation/${citations[0].id}` : "/mini/settings"} style={linkButtonStyle}>
-              {t({ zhHans: "查看来源", zhHant: "查看來源" })}
+              查看来源
             </Link>
-            <button onClick={() => setInput(t({ zhHans: "可以生成客户版说明吗？", zhHant: "可以生成客戶版說明嗎？" }))} style={linkActionStyle}>
-              {t({ zhHans: "继续追问", zhHant: "繼續追問" })}
+            <button onClick={() => setInput("可以生成客户版说明吗？")} style={linkActionStyle}>
+              继续追问
             </button>
           </div>
         </div>
       </MiniCard>
 
       <MiniCard>
-        <h3 style={{ margin: 0, fontSize: 18, color: "#16223b" }}>{t({ zhHans: "问答兜底演示", zhHant: "問答兜底演示" })}</h3>
+        <h3 style={{ margin: 0, fontSize: 18, color: "#16223b" }}>问答兜底演示</h3>
         <div style={{ display: "grid", gap: 10, marginTop: 14 }}>
           {miniFallbackStates.map((item) => (
             <div key={item.id} style={{ padding: 14, borderRadius: 16, background: "#f7faff" }}>
@@ -353,17 +352,13 @@ function MiniChatPageClient() {
         <div style={sheetBackdropStyle} onClick={() => setDrawerOpen(false)}>
           <div style={sheetStyle} onClick={(event) => event.stopPropagation()}>
             <div style={{ width: 48, height: 4, borderRadius: 999, background: "#d8e2f1", margin: "0 auto 14px" }} />
-            <div style={{ color: "#16223b", fontSize: 18, fontWeight: 800 }}>{t({ zhHans: "上传问答文件", zhHant: "上傳問答文件" })}</div>
-            <div style={{ marginTop: 6, color: "#71829f", fontSize: 12, lineHeight: 1.6 }}>
-              {t({ zhHans: "仅用于本次咨询问答，上传文件保存 1 个月", zhHant: "僅用於本次諮詢問答，上傳文件保存 1 個月" })}
-            </div>
-            <div style={{ marginTop: 14, padding: 14, borderRadius: 16, background: "#fff8e8", color: "#b15f00", lineHeight: 1.8 }}>
-              {t(miniUploadGuides.warning)}
-            </div>
+            <div style={{ color: "#16223b", fontSize: 18, fontWeight: 800 }}>上传问答文件</div>
+            <div style={{ marginTop: 6, color: "#71829f", fontSize: 12, lineHeight: 1.6 }}>仅用于本次咨询问答，上传文件保存 1 个月</div>
+            <div style={{ marginTop: 14, padding: 14, borderRadius: 16, background: "#fff8e8", color: "#b15f00", lineHeight: 1.8 }}>{t(miniUploadGuides.warning)}</div>
 
             <div style={{ display: "grid", gap: 10, marginTop: 16 }}>
               <div>
-                <div style={{ color: "#16223b", fontWeight: 700, marginBottom: 8 }}>{t({ zhHans: "允许上传", zhHant: "允許上傳" })}</div>
+                <div style={{ color: "#16223b", fontWeight: 700, marginBottom: 8 }}>允许上传</div>
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   {miniUploadGuides.allowed.map((item) => (
                     <span key={item.zhHans} style={uploadGuideTagStyle(true)}>
@@ -373,11 +368,11 @@ function MiniChatPageClient() {
                 </div>
               </div>
 
-              <button onClick={() => attachDemoFile("医疗计划书.pdf", t({ zhHans: "解析成功", zhHant: "解析成功" }))} style={primaryActionStyle}>
-                {t({ zhHans: "上传示例计划书", zhHant: "上傳示例計劃書" })}
+              <button onClick={() => attachDemoFile("医疗计划书.pdf", "解析成功")} style={primaryActionStyle}>
+                上传示例计划书
               </button>
-              <button onClick={() => attachDemoFile("产品小册子.pdf", t({ zhHans: "解析中", zhHant: "解析中" }))} style={secondaryActionStyle}>
-                {t({ zhHans: "上传示例小册子", zhHant: "上傳示例小冊子" })}
+              <button onClick={() => attachDemoFile("产品小册子.pdf", "解析中")} style={secondaryActionStyle}>
+                上传示例小册子
               </button>
             </div>
           </div>
@@ -397,11 +392,11 @@ function MiniChatPageFallback() {
       <MiniCard>
         <div style={{ display: "grid", gap: 12 }}>
           <div style={{ ...inputShellStyle, minHeight: 180 }}>
-            <div style={{ width: "100%", height: 20, borderRadius: 999, background: "#e8eef8" }} />
+            <div style={{ width: 96, height: 18, borderRadius: 999, background: "#e8eef8" }} />
             <div style={{ width: "100%", height: 88, borderRadius: 18, background: "#eef4ff" }} />
             <div style={{ display: "flex", gap: 10 }}>
-              <div style={{ flex: 1, height: 42, borderRadius: 14, background: "#eef4ff" }} />
-              <div style={{ width: 92, height: 42, borderRadius: 14, background: "#111a2d" }} />
+              <div style={{ width: 92, height: 42, borderRadius: 14, background: "#eef4ff" }} />
+              <div style={{ flex: 1, height: 42, borderRadius: 14, background: "#111a2d" }} />
             </div>
           </div>
         </div>
@@ -483,13 +478,13 @@ const deleteAttachmentStyle = {
 };
 
 const textareaStyle = {
-  minHeight: 112,
+  minHeight: 120,
   borderRadius: 18,
   border: "1px solid #dbe5f2",
   background: "#ffffff",
   padding: 16,
   color: "#16223b",
-  fontSize: 14,
+  fontSize: 15,
   lineHeight: 1.7,
   resize: "none" as const,
   outline: "none",
@@ -508,7 +503,7 @@ const promptChipStyle = {
 
 const primaryActionStyle = {
   border: 0,
-  minHeight: 42,
+  minHeight: 44,
   padding: "0 16px",
   borderRadius: 14,
   background: "#111a2d",
@@ -519,13 +514,24 @@ const primaryActionStyle = {
 
 const secondaryActionStyle = {
   border: "1px solid #dbe5f2",
-  minHeight: 42,
+  minHeight: 44,
   padding: "0 16px",
   borderRadius: 14,
   background: "#ffffff",
   color: "#16223b",
   fontWeight: 700,
   fontSize: 13,
+};
+
+const trustPanelStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+  gap: 12,
+  alignItems: "flex-start",
+  padding: 14,
+  borderRadius: 18,
+  background: "#f8fbff",
+  border: "1px solid #dbe5f2",
 };
 
 const trustBadgeStyle = {
@@ -540,12 +546,16 @@ const trustBadgeStyle = {
   fontWeight: 700,
 };
 
-const hintGoodStyle = {
-  padding: 12,
-  borderRadius: 16,
-  background: "#eef7ff",
-  color: "#2563eb",
+const minorInfoBadgeStyle = {
+  minHeight: 30,
+  padding: "0 12px",
+  borderRadius: 999,
+  background: "#eef4ff",
+  color: "#4e76df",
+  display: "inline-flex",
+  alignItems: "center",
   fontSize: 12,
+  fontWeight: 700,
 };
 
 const hintWarnStyle = {
@@ -567,7 +577,7 @@ const listStyle = {
   margin: 0,
   paddingLeft: 18,
   color: "#4b5c78",
-  lineHeight: 1.9,
+  lineHeight: 1.85,
 };
 
 const comparisonRowStyle = {

@@ -23,6 +23,12 @@ export function MiniShell({
 }) {
   const tabs = getNavItems("mini");
   const { locale, setLocale, t } = useMiniLocale();
+  const tabLabelMap: Record<MiniTab, LocalizedText> = {
+    chat: { zhHans: "问答", zhHant: "問答" },
+    products: { zhHans: "产品", zhHant: "產品" },
+    knowledge: { zhHans: "知识库", zhHant: "知識庫" },
+    history: { zhHans: "记录", zhHant: "記錄" },
+  };
 
   const resolvedTitle = typeof title === "string" ? title : t(title);
   const resolvedSubtitle = typeof subtitle === "string" ? subtitle : subtitle ? t(subtitle) : undefined;
@@ -136,7 +142,7 @@ export function MiniShell({
                   >
                     {iconMap[tabKey]}
                   </span>
-                  <span>{item.label}</span>
+                  <span>{t(tabLabelMap[tabKey] ?? { zhHans: item.label, zhHant: item.label })}</span>
                 </Link>
               );
             })}
@@ -164,7 +170,38 @@ export function MiniCard({ children }: { children: ReactNode }) {
 }
 
 export function CitationCard({ href, citation }: { href: string; citation: MiniCitation }) {
+  const { locale, t } = useMiniLocale();
   const meta = getFriendlySourceLevel(citation.sourceLevel);
+  const sourceLevelText =
+    locale === "ZH_HANT"
+      ? {
+          source: "來源",
+          page: "頁碼",
+          version: "版本",
+          effective: "生效",
+          level: "等級",
+          training: "含內部培訓資料，需以官方文件為準",
+          expired: "該優惠已過期，僅可作為歷史資料參考",
+        }
+      : {
+          source: "来源",
+          page: "页码",
+          version: "版本",
+          effective: "生效",
+          level: "等级",
+          training: "含内部培训资料，需以官方文件为准",
+          expired: "该优惠已过期，仅可作为历史资料参考",
+        };
+  const localizedMetaLabel =
+    locale === "ZH_HANT"
+      ? {
+          "官方条款": "官方條款",
+          "官方小册子": "官方小冊子",
+          "费率 / 利益说明": "費率 / 利益說明",
+          "官方通告 / 优惠": "官方通告 / 優惠",
+          "内部培训资料": "內部培訓資料",
+        }[meta.label] ?? meta.label
+      : meta.label;
 
   return (
     <Link
@@ -181,17 +218,17 @@ export function CitationCard({ href, citation }: { href: string; citation: MiniC
     >
       <strong style={{ color: "#16223b", lineHeight: 1.45 }}>{citation.fileName}</strong>
       <div style={{ display: "grid", gap: 4, color: "#6e809c", fontSize: 12, lineHeight: 1.7 }}>
-        <span>来源：{meta.label}</span>
-        <span>页码：P.{citation.pageNumber}</span>
-        <span>版本：{citation.version}</span>
-        <span>生效：{citation.effectiveDate}</span>
+        <span>{sourceLevelText.source}：{localizedMetaLabel}</span>
+        <span>{sourceLevelText.page}：P.{citation.pageNumber}</span>
+        <span>{sourceLevelText.version}：{citation.version}</span>
+        <span>{sourceLevelText.effective}：{citation.effectiveDate}</span>
       </div>
-      <div style={{ color: "#90a1ba", fontSize: 11 }}>等级 {citation.sourceLevel}</div>
+      <div style={{ color: "#90a1ba", fontSize: 11 }}>{sourceLevelText.level} {citation.sourceLevel}</div>
       {citation.isTrainingMaterial ? (
-        <span style={{ color: "#c47a00", fontSize: 12 }}>含内部培训资料，需以官方文件为准</span>
+        <span style={{ color: "#c47a00", fontSize: 12 }}>{sourceLevelText.training}</span>
       ) : null}
       {citation.isExpiredPromotion ? (
-        <span style={{ color: "#dc2626", fontSize: 12 }}>该优惠已过期，仅可作为历史资料参考</span>
+        <span style={{ color: "#dc2626", fontSize: 12 }}>{sourceLevelText.expired}</span>
       ) : null}
     </Link>
   );
