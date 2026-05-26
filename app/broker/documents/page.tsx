@@ -3,6 +3,7 @@ import { DataTable, type TableRow } from "../../../components/data-table";
 import { InfoCard } from "../../../components/info-card";
 import { PageShell } from "../../../components/page-shell";
 import { StatusBadge } from "../../../components/status-badge";
+import { TableControls } from "../../../components/table-controls";
 import { ToolbarButton } from "../../../components/toolbar-button";
 import { getBrokerDocuments } from "../../../lib/api";
 import { brokerDocuments } from "../../../lib/mock-data";
@@ -15,7 +16,7 @@ export default async function BrokerDocumentsPage() {
     fileType,
     version,
     <StatusBadge key={`${fileName}-status`} label={status} />,
-    index === 0 ? "资料清晰，待平台审核" : index === 2 ? "已过期，前端仍需标红" : "已通过平台审核",
+    index === 0 ? "资料清晰，待平台审核" : index === 2 ? "已过期，前端引用会标红" : "已通过平台审核",
   ]);
 
   try {
@@ -36,7 +37,7 @@ export default async function BrokerDocumentsPage() {
   return (
     <PageShell
       title="文件状态"
-      description="只查看本公司文件，支持按审核状态、文件类型、时间范围筛选。"
+      description="只查看本公司文件，支持按审核状态、文件类型和时间范围筛选。"
       actions={
         <Link href="/broker/upload">
           <ToolbarButton>继续上传</ToolbarButton>
@@ -44,7 +45,23 @@ export default async function BrokerDocumentsPage() {
       }
     >
       <InfoCard title="文件状态列表" description="资料过期不会自动删除，但会保留历史查询并标红显示。">
-        <DataTable headers={["文件", "文件类型 / 来源等级", "版本", "审核状态", "审核意见"]} rows={rows} gridTemplateColumns="2.1fr 1fr 0.8fr 0.8fr 1.5fr" />
+        <TableControls
+          searchPlaceholder="搜索文件名称 / 关联产品 / 版本号"
+          filters={[
+            { label: "审核状态", minWidth: 120 },
+            { label: "文件类型", minWidth: 120 },
+            { label: "时间范围", minWidth: 130 },
+          ]}
+          selectionLabel="已选择 1 项"
+          batchActions={
+            <>
+              <ToolbarButton>查看详情</ToolbarButton>
+              <ToolbarButton>导出状态</ToolbarButton>
+            </>
+          }
+          pageLabel="第 1 页，共 4 页"
+        />
+        <DataTable headers={["文件名称", "文件类型 / 来源等级", "版本号", "审核状态", "审核意见"]} rows={rows} gridTemplateColumns="2.1fr 1fr 0.8fr 0.8fr 1.5fr" minWidth={1080} />
       </InfoCard>
     </PageShell>
   );

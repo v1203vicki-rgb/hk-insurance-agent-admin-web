@@ -3,6 +3,7 @@ import { DataTable } from "../../../components/data-table";
 import { InfoCard } from "../../../components/info-card";
 import { PageShell } from "../../../components/page-shell";
 import { StatusBadge } from "../../../components/status-badge";
+import { TableControls } from "../../../components/table-controls";
 import { ToolbarButton } from "../../../components/toolbar-button";
 import { brokerUsers } from "../../../lib/mock-data";
 
@@ -18,6 +19,22 @@ export default function BrokerUsersPage() {
       }
     >
       <InfoCard title="经纪人列表">
+        <TableControls
+          searchPlaceholder="搜索姓名 / 邮箱 / 关注方向"
+          filters={[
+            { label: "账号状态", minWidth: 120 },
+            { label: "角色", minWidth: 120 },
+            { label: "时间范围", minWidth: 130 },
+          ]}
+          selectionLabel="已选择 1 项"
+          batchActions={
+            <>
+              <ToolbarButton>批量禁用</ToolbarButton>
+              <ToolbarButton>批量重置密码</ToolbarButton>
+            </>
+          }
+          pageLabel="第 1 页，共 3 页"
+        />
         <DataTable
           headers={["姓名", "邮箱", "状态", "问答量", "关注方向"]}
           rows={brokerUsers.map(([name, email, status, asks, focus], index) => [
@@ -30,6 +47,7 @@ export default function BrokerUsersPage() {
             focus,
           ])}
           gridTemplateColumns="0.9fr 1.5fr 0.8fr 0.8fr 1fr"
+          minWidth={980}
         />
       </InfoCard>
     </PageShell>

@@ -6,16 +6,20 @@ export function DataTable({
   headers,
   rows,
   gridTemplateColumns,
+  minWidth,
+  emptyText,
 }: {
   headers: string[];
   rows: TableRow[];
   gridTemplateColumns?: string;
+  minWidth?: number;
+  emptyText?: string;
 }) {
   const columns = gridTemplateColumns ?? `repeat(${headers.length}, minmax(140px, 1fr))`;
 
   return (
     <div style={{ overflowX: "auto", borderRadius: 24, border: "1px solid #dbe5f2", background: "#ffffff" }}>
-      <div style={{ minWidth: 900 }}>
+      <div style={{ minWidth: minWidth ?? 900 }}>
         <div
           style={{
             position: "sticky",
@@ -37,7 +41,7 @@ export function DataTable({
         </div>
 
         {rows.length === 0 ? (
-          <div style={{ padding: 24, color: "#71829f", fontSize: 14 }}>暂无数据</div>
+          <div style={{ padding: 24, color: "#71829f", fontSize: 14 }}>{emptyText ?? "暂无数据"}</div>
         ) : (
           rows.map((row, index) => (
             <div key={index} style={{ display: "grid", gridTemplateColumns: columns, borderTop: "1px solid #e3eaf5" }}>

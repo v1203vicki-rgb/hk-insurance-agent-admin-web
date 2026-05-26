@@ -1,9 +1,9 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
 import { DataTable, type TableRow } from "../../../components/data-table";
 import { InfoCard } from "../../../components/info-card";
 import { PageShell } from "../../../components/page-shell";
 import { StatusBadge } from "../../../components/status-badge";
+import { TableControls } from "../../../components/table-controls";
 import { ToolbarButton } from "../../../components/toolbar-button";
 import { getDocuments } from "../../../lib/api";
 import { platformDocuments } from "../../../lib/mock-data";
@@ -14,7 +14,7 @@ export default async function DocumentsPage() {
       {fileName}
     </Link>,
     company,
-    "产品小册子",
+    index === 2 ? "优惠通告" : "产品资料",
     level,
     "繁体中文 / 简体中文",
     `v2026.0${index + 1}`,
@@ -33,7 +33,7 @@ export default async function DocumentsPage() {
         {item.fileName}
       </Link>,
       item.reviewComment ?? "平台上传",
-      "产品资料",
+      item.sourceLevel?.startsWith("L4") ? "优惠通告" : "产品资料",
       item.sourceLevel ?? "L2 官方小册子",
       item.language ?? "简体中文",
       item.version ?? "-",
@@ -61,34 +61,31 @@ export default async function DocumentsPage() {
         </>
       }
     >
-      <InfoCard title="知识文件列表" description="表格支持搜索、筛选、横向滚动与批量操作预留。">
-        <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr 1fr 1fr 160px", gap: 12, marginBottom: 18 }}>
-          <div style={filterFieldStyle}>搜索文件名称 / 来源公司 / 产品</div>
-          <div style={filterFieldStyle}>文件类型筛选</div>
-          <div style={filterFieldStyle}>状态筛选</div>
-          <div style={filterFieldStyle}>时间范围</div>
-          <div style={{ display: "flex", gap: 8 }}>
-            <ToolbarButton>批量启用</ToolbarButton>
-          </div>
-        </div>
+      <InfoCard title="知识文件列表" description="列表已统一提供搜索、筛选、时间范围、分页和批量操作区。">
+        <TableControls
+          searchPlaceholder="搜索文件名称 / 来源公司 / 关联产品"
+          filters={[
+            { label: "文件类型", minWidth: 130 },
+            { label: "来源等级", minWidth: 130 },
+            { label: "审核状态", minWidth: 130 },
+            { label: "时间范围", minWidth: 130 },
+          ]}
+          selectionLabel="已选择 3 项"
+          batchActions={
+            <>
+              <ToolbarButton>批量启用</ToolbarButton>
+              <ToolbarButton>批量归档</ToolbarButton>
+            </>
+          }
+          pageLabel="第 1 页，共 8 页"
+        />
         <DataTable
-          headers={["文件名称", "来源公司", "文件类型", "来源等级", "语言", "版本号", "发布日期", "生效日期", "失效日期", "当前状态", "审核状态", "操作"]}
+          headers={["文件名称", "来源公司", "文件类型", "来源等级", "语言", "版本号", "发布日期", "生效日期", "失效日期", "当前启用状态", "审核状态", "操作"]}
           rows={rows}
-          gridTemplateColumns="2fr 1.2fr 1fr 1fr 1.1fr 0.9fr 1fr 1fr 1fr 0.9fr 0.9fr 0.7fr"
+          gridTemplateColumns="2fr 1.2fr 1fr 1fr 1.1fr 0.9fr 1fr 1fr 1fr 0.9fr 0.9fr 0.8fr"
+          minWidth={1500}
         />
       </InfoCard>
     </PageShell>
   );
 }
-
-const filterFieldStyle: CSSProperties = {
-  minHeight: 46,
-  borderRadius: 16,
-  border: "1px solid #dbe5f2",
-  background: "#f7faff",
-  display: "grid",
-  alignItems: "center",
-  padding: "0 14px",
-  color: "#6f809d",
-  fontSize: 14,
-};

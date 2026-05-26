@@ -4,6 +4,8 @@ import { InfoCard } from "../../../components/info-card";
 import { PageShell } from "../../../components/page-shell";
 import { StatCard } from "../../../components/stat-card";
 import { StatusBadge } from "../../../components/status-badge";
+import { TableControls } from "../../../components/table-controls";
+import { ToolbarButton } from "../../../components/toolbar-button";
 import { getComplianceOverview } from "../../../lib/api";
 import { complianceRows, complianceStats } from "../../../lib/mock-data";
 
@@ -44,7 +46,24 @@ export default async function CompliancePage() {
       </section>
 
       <InfoCard title="合规记录列表" description="可进入详情页查看命中规则、引用来源和审核结论。">
-        <DataTable headers={["记录", "风险类型 / 命中说明", "当前状态", "最近时间", "建议动作"]} rows={rows} gridTemplateColumns="1.6fr 1.8fr 0.8fr 0.9fr 1fr" />
+        <TableControls
+          searchPlaceholder="搜索问题 / 风险类型 / 命中规则"
+          filters={[
+            { label: "风险类型", minWidth: 120 },
+            { label: "审核结论", minWidth: 120 },
+            { label: "官方文件", minWidth: 120 },
+            { label: "时间范围", minWidth: 130 },
+          ]}
+          selectionLabel="已选择 1 项"
+          batchActions={
+            <>
+              <ToolbarButton>加入禁答规则</ToolbarButton>
+              <ToolbarButton>补充 FAQ</ToolbarButton>
+            </>
+          }
+          pageLabel="第 1 页，共 4 页"
+        />
+        <DataTable headers={["记录", "风险类型 / 命中说明", "当前状态", "最近时间", "建议动作"]} rows={rows} gridTemplateColumns="1.6fr 1.8fr 0.8fr 0.9fr 1fr" minWidth={1180} />
       </InfoCard>
     </PageShell>
   );

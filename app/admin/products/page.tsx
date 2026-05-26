@@ -1,23 +1,12 @@
 import Link from "next/link";
-import type { CSSProperties } from "react";
 import { DataTable, type TableRow } from "../../../components/data-table";
 import { InfoCard } from "../../../components/info-card";
 import { PageShell } from "../../../components/page-shell";
 import { StatusBadge } from "../../../components/status-badge";
+import { TableControls } from "../../../components/table-controls";
 import { ToolbarButton } from "../../../components/toolbar-button";
 import { getAdminProducts } from "../../../lib/api";
 import { products } from "../../../lib/mock-data";
-
-const filterStyle: CSSProperties = {
-  borderRadius: 16,
-  border: "1px solid #dbe5f2",
-  background: "#f7faff",
-  padding: "12px 14px",
-  color: "#6f809d",
-  minHeight: 44,
-  display: "grid",
-  alignItems: "center",
-};
 
 export default async function ProductsPage() {
   let rows: TableRow[] = products.map(([company, name, type, status, version], index) => [
@@ -61,14 +50,24 @@ export default async function ProductsPage() {
       }
     >
       <InfoCard title="产品列表" description="支持按保险公司、产品类型、版本状态和时间范围筛选。">
-        <div style={{ display: "grid", gridTemplateColumns: "1.6fr 1fr 1fr 1fr auto", gap: 12, marginBottom: 18 }}>
-          <div style={filterStyle}>搜索产品名称 / 保险公司</div>
-          <div style={filterStyle}>产品类型</div>
-          <div style={filterStyle}>状态筛选</div>
-          <div style={filterStyle}>时间范围</div>
-          <ToolbarButton>批量导出</ToolbarButton>
-        </div>
-        <DataTable headers={["保险公司", "产品名称", "产品类型", "状态", "当前启用版本", "优惠政策"]} rows={rows} gridTemplateColumns="1fr 1.8fr 1fr 0.8fr 0.9fr 1fr" />
+        <TableControls
+          searchPlaceholder="搜索产品名称 / 保险公司 / 产品类型"
+          filters={[
+            { label: "产品类型", minWidth: 120 },
+            { label: "当前状态", minWidth: 120 },
+            { label: "启用版本", minWidth: 120 },
+            { label: "时间范围", minWidth: 130 },
+          ]}
+          selectionLabel="已选择 2 项"
+          batchActions={
+            <>
+              <ToolbarButton>批量导出</ToolbarButton>
+              <ToolbarButton>批量设为启用</ToolbarButton>
+            </>
+          }
+          pageLabel="第 1 页，共 4 页"
+        />
+        <DataTable headers={["保险公司", "产品名称", "产品类型", "当前状态", "当前启用版本", "优惠政策"]} rows={rows} gridTemplateColumns="1fr 1.8fr 1fr 0.8fr 0.9fr 1fr" minWidth={1120} />
       </InfoCard>
     </PageShell>
   );
