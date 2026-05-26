@@ -21,7 +21,11 @@ export default function MiniComparePage() {
     }
   }, []);
 
-  const products = useMemo(() => resolveMiniCompareSelection(selection).slice(0, 4), [selection]);
+  const products = useMemo(() => {
+    const resolved = resolveMiniCompareSelection(selection).slice(0, 4);
+    if (resolved.length >= 2) return resolved;
+    return resolveMiniCompareSelection(getDefaultMiniCompareSelection()).slice(0, 4);
+  }, [selection]);
 
   const rows = miniCompareFieldMeta.map((field) => {
     const values = products.map(({ product, version }) => {

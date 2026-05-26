@@ -29,6 +29,12 @@ export function MiniShell({
     knowledge: { zhHans: "知识库", zhHant: "知識庫" },
     history: { zhHans: "记录", zhHant: "記錄" },
   };
+  const tabIconMap: Record<MiniTab, LocalizedText> = {
+    chat: { zhHans: "问", zhHant: "問" },
+    products: { zhHans: "产", zhHant: "產" },
+    knowledge: { zhHans: "知", zhHant: "知" },
+    history: { zhHans: "记", zhHant: "記" },
+  };
 
   const resolvedTitle = typeof title === "string" ? title : t(title);
   const resolvedSubtitle = typeof subtitle === "string" ? subtitle : subtitle ? t(subtitle) : undefined;
@@ -103,13 +109,6 @@ export function MiniShell({
             {tabs.map((item) => {
               const tabKey = item.href.split("/").pop() as MiniTab;
               const active = tabKey === activeTab;
-              const iconMap: Record<MiniTab, string> = {
-                chat: "问",
-                products: "产",
-                knowledge: "知",
-                history: "记",
-              };
-
               return (
                 <Link
                   key={item.href}
@@ -140,7 +139,7 @@ export function MiniShell({
                       lineHeight: 1,
                     }}
                   >
-                    {iconMap[tabKey]}
+                    {t(tabIconMap[tabKey])}
                   </span>
                   <span>{t(tabLabelMap[tabKey] ?? { zhHans: item.label, zhHant: item.label })}</span>
                 </Link>

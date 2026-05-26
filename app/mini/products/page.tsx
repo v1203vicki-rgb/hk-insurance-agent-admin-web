@@ -140,13 +140,13 @@ export default function MiniProductsPage() {
 
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
                 <Link href={`/mini/products/${product.id}`} style={ghostButtonStyle}>
-                  查看详情
+                  {t({ zhHans: "查看详情", zhHant: "查看詳情" })}
                 </Link>
                 <Link href={`/mini/chat?productId=${product.id}&question=${encodeURIComponent(`请解释 ${t(product.name)} 的核心条款`)}`} style={ghostButtonStyle}>
-                  问这个产品
+                  {t({ zhHans: "问这个产品", zhHant: "問這個產品" })}
                 </Link>
                 <button onClick={() => toggleCompare(product)} style={solidButtonStyle(selectedNow)}>
-                  {selectedNow ? "已加入对比" : "加入对比"}
+                  {selectedNow ? t({ zhHans: "已加入对比", zhHant: "已加入對比" }) : t({ zhHans: "加入对比", zhHant: "加入對比" })}
                 </button>
               </div>
             </div>
@@ -172,12 +172,16 @@ export default function MiniProductsPage() {
           }}
         >
           <div style={{ display: "grid", gap: 4 }}>
-            <strong>已选 {selected.length} 个产品</strong>
-            <span style={{ color: "#c7d2e6", fontSize: 12 }}>{selected.length < 2 ? "至少选择 2 个产品后才能开始对比" : "可进入对比页查看资料差异"}</span>
+            <strong>{t({ zhHans: `已选 ${selected.length} 个产品`, zhHant: `已選 ${selected.length} 個產品` })}</strong>
+            <span style={{ color: "#c7d2e6", fontSize: 12 }}>
+              {selected.length < 2
+                ? t({ zhHans: "至少选择 2 个产品后才能开始对比", zhHant: "至少選擇 2 個產品後才能開始對比" })
+                : t({ zhHans: "可进入对比页查看资料差异", zhHant: "可進入對比頁查看資料差異" })}
+            </span>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
             <button onClick={clearSelected} style={clearButtonStyle}>
-              清空
+              {t({ zhHans: "清空", zhHant: "清空" })}
             </button>
             <Link
               href={selected.length >= 2 ? "/mini/compare" : "#"}
@@ -190,7 +194,7 @@ export default function MiniProductsPage() {
                 pointerEvents: selected.length >= 2 ? "auto" : "none",
               }}
             >
-              开始对比
+              {t({ zhHans: "开始对比", zhHant: "開始對比" })}
             </Link>
           </div>
         </div>
