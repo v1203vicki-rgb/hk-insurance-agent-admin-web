@@ -45,7 +45,7 @@ export default function MiniComparePage() {
             value: fixedFieldValue.value,
             citation: getMiniCitation(fixedFieldValue.citationId),
           }
-        : { value: "—", citation: undefined };
+        : { value: "不适用", citation: undefined };
     });
 
     return { field, values };
@@ -58,7 +58,7 @@ export default function MiniComparePage() {
       activeTab="products"
     >
       <MiniCard>
-        <h3 style={sectionTitleStyle}>{t({ zhHans: "已选产品", zhHant: "已選產品" })}</h3>
+        <h3 style={sectionTitleStyle}>已选产品</h3>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 10, marginTop: 14 }}>
           {products.map(({ product, version }) => (
             <div key={`${product.id}-${version.id}`} style={selectedPillStyle}>
@@ -69,7 +69,7 @@ export default function MiniComparePage() {
       </MiniCard>
 
       <MiniCard>
-        <h3 style={sectionTitleStyle}>{t({ zhHans: "客观对比表", zhHant: "客觀對比表" })}</h3>
+        <h3 style={sectionTitleStyle}>客观对比表</h3>
         <div style={{ display: "grid", gap: 12, marginTop: 14 }}>
           {rows.map((row) => (
             <div key={row.field.key} style={rowCardStyle}>
@@ -83,16 +83,12 @@ export default function MiniComparePage() {
                         <strong style={{ color: "#4e76df", fontSize: 12 }}>{label}</strong>
                         {item.citation ? (
                           <Link href={`/mini/citation/${item.citation.id}`} style={citationLinkStyle}>
-                            {t({ zhHans: "查看来源", zhHant: "查看來源" })}
+                            查看来源
                           </Link>
                         ) : null}
                       </div>
                       <div style={{ marginTop: 8, color: "#16223b", lineHeight: 1.6 }}>{item.value}</div>
-                      {item.citation ? (
-                        <div style={{ marginTop: 6, color: "#90a1ba", fontSize: 12 }}>
-                          {t({ zhHans: `页码 P.${item.citation.pageNumber}`, zhHant: `頁碼 P.${item.citation.pageNumber}` })}
-                        </div>
-                      ) : null}
+                      {item.citation ? <div style={{ marginTop: 6, color: "#90a1ba", fontSize: 12 }}>页码 P.{item.citation.pageNumber}</div> : null}
                     </div>
                   );
                 })}
@@ -103,13 +99,13 @@ export default function MiniComparePage() {
       </MiniCard>
 
       <MiniCard>
-        <h3 style={sectionTitleStyle}>{t({ zhHans: "差异说明", zhHant: "差異說明" })}</h3>
+        <h3 style={sectionTitleStyle}>差异说明</h3>
         <ul style={{ margin: "14px 0 0", paddingLeft: 18, color: "#4b5c78", lineHeight: 1.9 }}>
-          <li>{t({ zhHans: "A 公司产品保障地区更广，B 公司产品更聚焦亚洲及指定地区。", zhHant: "A 公司產品保障地區更廣，B 公司產品更聚焦亞洲及指定地區。" })}</li>
-          <li>{t({ zhHans: "病房级别、自付额和共同保险的设计存在差异，适合先核对计划书及官方条款。", zhHant: "病房級別、自付額和共同保險的設計存在差異，適合先核對計劃書及官方條款。" })}</li>
-          <li>{t({ zhHans: "历史优惠已过期时，仅可作为历史资料参考。", zhHant: "歷史優惠已過期時，僅可作為歷史資料參考。" })}</li>
+          <li>A公司产品保障地区更广，B公司产品更聚焦亚洲及指定地区。</li>
+          <li>病房级别、自付额和共同保险的设计存在差异，适合先核对计划书及官方条款。</li>
+          <li>历史优惠已过期时，仅可作为历史资料参考。</li>
         </ul>
-        <div style={noticeStyle}>{t({ zhHans: "仅列资料差异，不构成购买建议。具体以官方文件及持牌顾问说明为准。", zhHant: "僅列資料差異，不構成購買建議。具體以官方文件及持牌顧問說明為準。" })}</div>
+        <div style={noticeStyle}>仅列资料差异，不构成购买建议。具体以官方文件及持牌顾问说明为准。</div>
       </MiniCard>
     </MiniShell>
   );

@@ -36,33 +36,28 @@ export default function MiniHistoryPage() {
       activeTab="history"
       action={
         <Link href="/mini/settings" style={settingsButtonStyle}>
-          {t({ zhHans: "设置与隐私", zhHant: "設置與隱私" })}
+          设置与隐私
         </Link>
       }
     >
       <MiniCard>
         <div style={searchBoxStyle}>
-          <input
-            value={keyword}
-            onChange={(event) => setKeyword(event.target.value)}
-            placeholder={t({ zhHans: "搜索历史问题", zhHant: "搜索歷史問題" })}
-            style={searchInputStyle}
-          />
+          <input value={keyword} onChange={(event) => setKeyword(event.target.value)} placeholder="搜索历史问题" style={searchInputStyle} />
         </div>
         <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 14 }}>
           {[
-            { id: "today", label: { zhHans: "今天", zhHant: "今天" } },
-            { id: "7d", label: { zhHans: "7天", zhHant: "7天" } },
-            { id: "30d", label: { zhHans: "30天", zhHant: "30天" } },
-            { id: "compare", label: { zhHans: "产品对比", zhHant: "產品對比" } },
-            { id: "upload", label: { zhHans: "上传文件", zhHant: "上傳文件" } },
-            { id: "no-answer", label: { zhHans: "无答案", zhHant: "無答案" } },
-            { id: "risk", label: { zhHans: "高风险", zhHant: "高風險" } },
+            { id: "today", label: "今天" },
+            { id: "7d", label: "7天" },
+            { id: "30d", label: "30天" },
+            { id: "compare", label: "产品对比" },
+            { id: "upload", label: "上传文件" },
+            { id: "no-answer", label: "无答案" },
+            { id: "risk", label: "高风险" },
           ].map(({ id, label }) => {
             const active = filters.includes(id);
             return (
               <button key={id} onClick={() => setFilters((prev) => (prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]))} style={chipStyle(active)}>
-                {t(label)}
+                {label}
               </button>
             );
           })}
@@ -79,11 +74,9 @@ export default function MiniHistoryPage() {
                   <strong style={{ color: "#16223b", fontSize: 17, lineHeight: 1.5 }}>{t(item.title)}</strong>
                   <div style={{ marginTop: 8, display: "flex", gap: 8, flexWrap: "wrap" }}>
                     <span style={tagStyle}>{t(item.category)}</span>
-                    <span style={{ ...tagStyle, color: "#2563eb", background: "#eef4ff" }}>
-                      {t({ zhHans: `${assistant?.citations?.length ?? 0} 个引用`, zhHant: `${assistant?.citations?.length ?? 0} 個引用` })}
-                    </span>
-                    {item.uploads.length > 0 ? <span style={{ ...tagStyle, color: "#4e76df" }}>{t({ zhHans: "含上传文件", zhHant: "含上傳文件" })}</span> : null}
-                    <span style={{ ...tagStyle, color: "#0f9f6e", background: "#e8fbf0" }}>{t({ zhHans: "已生成客户版回答", zhHant: "已生成客戶版回答" })}</span>
+                    <span style={{ ...tagStyle, color: "#2563eb", background: "#eef4ff" }}>{assistant?.citations?.length ?? 0} 个引用</span>
+                    {item.uploads.length > 0 ? <span style={{ ...tagStyle, color: "#4e76df" }}>含上传文件</span> : null}
+                    <span style={{ ...tagStyle, color: "#0f9f6e", background: "#e8fbf0" }}>已生成客户版回答</span>
                   </div>
                 </div>
                 <span style={{ color: "#6d7f9c", fontSize: 13 }}>{item.createdAt.slice(11, 16)}</span>

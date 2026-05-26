@@ -100,7 +100,7 @@ export function MiniShell({
               const iconMap: Record<MiniTab, string> = {
                 chat: "问",
                 products: "产",
-                knowledge: "库",
+                knowledge: "知",
                 history: "记",
               };
 
@@ -118,6 +118,7 @@ export function MiniShell({
                     fontSize: 12,
                     fontWeight: active ? 700 : 500,
                     background: active ? "#f5f8fd" : "transparent",
+                    textDecoration: "none",
                   }}
                 >
                   <span

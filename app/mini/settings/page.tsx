@@ -14,7 +14,7 @@ export default function MiniSettingsPage() {
       activeTab="history"
     >
       <MiniCard>
-        <h3 style={titleStyle}>{t({ zhHans: "语言设置", zhHant: "語言設置" })}</h3>
+        <h3 style={titleStyle}>语言设置</h3>
         <div style={{ display: "flex", gap: 10, marginTop: 14 }}>
           <button onClick={() => setLocale("ZH_HANS")} style={localeButtonStyle(locale === "ZH_HANS")}>
             简体中文
@@ -38,17 +38,15 @@ export default function MiniSettingsPage() {
       <MiniCard>
         <h3 style={titleStyle}>{t(miniSettingsContent.privacy)}</h3>
         <div style={{ display: "grid", gap: 10, marginTop: 14, color: "#16223b", lineHeight: 1.8 }}>
-          <div>{t({ zhHans: "不要上传身份证、银行资料、医疗报告、体检报告、诊断证明、理赔文件。", zhHant: "不要上傳身份證、銀行資料、醫療報告、體檢報告、診斷證明、理賠文件。" })}</div>
-          <div>{t({ zhHans: "不采集客户姓名、电话、微信。", zhHant: "不採集客戶姓名、電話、微信。" })}</div>
-          <div>{t({ zhHans: "不做客户留资。", zhHant: "不做客戶留資。" })}</div>
+          <div>不要上传身份证、银行资料、医疗报告、体检报告、诊断证明、理赔文件。</div>
+          <div>不采集客户姓名、电话、微信。</div>
+          <div>不做客户留资。</div>
         </div>
       </MiniCard>
 
       <MiniCard>
-        <h3 style={titleStyle}>{t({ zhHans: "版本信息", zhHant: "版本信息" })}</h3>
-        <div style={{ marginTop: 14, color: "#16223b", lineHeight: 1.8 }}>
-          {t({ zhHans: "当前为演示版 / MVP", zhHant: "當前為演示版 / MVP" })}
-        </div>
+        <h3 style={titleStyle}>版本信息</h3>
+        <div style={{ marginTop: 14, color: "#16223b", lineHeight: 1.8 }}>当前为演示版 / MVP</div>
       </MiniCard>
     </MiniShell>
   );

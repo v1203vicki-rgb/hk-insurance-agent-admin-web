@@ -13,7 +13,7 @@ export default function MiniKnowledgeCategoryPage({ params }: { params: { catego
     return (
       <MiniShell title={{ zhHans: "分类问题列表", zhHant: "分類問題列表" }} activeTab="knowledge">
         <MiniCard>
-          <div style={{ color: "#6d7f9c" }}>{t({ zhHans: "未找到对应分类。", zhHant: "未找到對應分類。" })}</div>
+          <div style={{ color: "#6d7f9c" }}>未找到对应分类。</div>
         </MiniCard>
       </MiniShell>
     );
@@ -42,18 +42,14 @@ export default function MiniKnowledgeCategoryPage({ params }: { params: { catego
               >
                 <div>
                   <div style={{ fontWeight: 700, lineHeight: 1.6 }}>{t(item.question)}</div>
-                  <div style={{ marginTop: 6, fontSize: 12, color: "#90a1ba" }}>
-                    {t({ zhHans: `最近更新 ${item.updatedAt}`, zhHant: `最近更新 ${item.updatedAt}` })}
-                  </div>
+                  <div style={{ marginTop: 6, fontSize: 12, color: "#90a1ba" }}>最近更新 {item.updatedAt}</div>
                 </div>
                 <span style={{ color: "#90a1ba" }}>查看</span>
               </Link>
             ))}
           </div>
         ) : (
-          <div style={{ color: "#71829f", lineHeight: 1.8 }}>
-            {t({ zhHans: "该分类的高频问题正在整理中，你也可以直接去问答页输入问题。", zhHant: "該分類的高頻問題正在整理中，你也可以直接去問答頁輸入問題。" })}
-          </div>
+          <div style={{ color: "#71829f", lineHeight: 1.8 }}>该分类的高频问题正在整理中，你也可以直接去问答页输入问题。</div>
         )}
       </MiniCard>
     </MiniShell>

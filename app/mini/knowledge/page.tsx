@@ -46,8 +46,8 @@ export default function MiniKnowledgePage() {
                   <div style={{ color: "#16223b", fontWeight: 800, fontSize: 16, lineHeight: 1.4 }}>{t(category.title)}</div>
                   <div style={{ color: "#71829f", fontSize: 13, lineHeight: 1.7 }}>{t(category.topics)}</div>
                   <div style={{ display: "flex", justifyContent: "space-between", gap: 12, color: "#90a1ba", fontSize: 12 }}>
-                    <span>{t({ zhHans: `${count} 个高频问题`, zhHant: `${count} 個高頻問題` })}</span>
-                    <span>{t({ zhHans: "最近更新 5 月", zhHant: "最近更新 5 月" })}</span>
+                    <span>{count} 个高频问题</span>
+                    <span>最近更新 5 月</span>
                   </div>
                 </div>
               </MiniCard>
